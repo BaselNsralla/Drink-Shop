@@ -12,6 +12,7 @@
 		FB3DC4C520667A72004548AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB3DC4C320667A72004548AF /* Main.storyboard */; };
 		FB3DC4C720667A72004548AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB3DC4C620667A72004548AF /* Assets.xcassets */; };
 		FB3DC4CA20667A72004548AF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB3DC4C820667A72004548AF /* LaunchScreen.storyboard */; };
+		FB3DC4D220667AA3004548AF /* DrinkContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4D120667AA3004548AF /* DrinkContainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		FB3DC4C620667A72004548AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FB3DC4C920667A72004548AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FB3DC4CB20667A72004548AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FB3DC4D120667AA3004548AF /* DrinkContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				FB3DC4BF20667A72004548AF /* AppDelegate.swift */,
 				FB3DC4C120667A72004548AF /* ViewController.swift */,
+				FB3DC4D120667AA3004548AF /* DrinkContainer.swift */,
 				FB3DC4C320667A72004548AF /* Main.storyboard */,
 				FB3DC4C620667A72004548AF /* Assets.xcassets */,
 				FB3DC4C820667A72004548AF /* LaunchScreen.storyboard */,
@@ -136,6 +139,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB3DC4D220667AA3004548AF /* DrinkContainer.swift in Sources */,
 				FB3DC4C220667A72004548AF /* ViewController.swift in Sources */,
 				FB3DC4C020667A72004548AF /* AppDelegate.swift in Sources */,
 			);
