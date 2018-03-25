@@ -8,8 +8,8 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
-    
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    let MARGIN: CGFloat = 3
     let drinksModel = DrinksModel()
     let drink = DrinkContainer()
     let drinkCell = DrinkListCollectionViewCell()
@@ -50,6 +50,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.translatesAutoresizingMaskIntoConstraints = false
         drink.heightAnchor.constraint(equalToConstant: CGFloat(350)).isActive = true
         drink.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        drink.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         drink.backgroundColor = UIColor(red: 204/255, green: 102/255, blue: 153/255, alpha:1)
         drink.layer.shadowColor = UIColor.black.cgColor
         drink.layer.shadowOpacity = 1
@@ -58,27 +59,31 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.layer.shadowPath = UIBezierPath(rect: drink.bounds).cgPath
 
         orderButton.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
         orderButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: 5).isActive = true
         
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
         collectionViewContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        collectionViewContainer.topAnchor.constraint(equalTo: orderButton.bottomAnchor).isActive = true
-        collectionViewContainer.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        collectionViewContainer.topAnchor.constraint(equalTo: orderButton.bottomAnchor, constant: MARGIN).isActive = true
+        collectionViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         collectionViewContainer.backgroundColor = UIColor.brown
     }
     
     func setupList () {
-        
-        let drinkList = UICollectionView(frame: collectionViewContainer.frame, collectionViewLayout: UICollectionViewFlowLayout())
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionViewContainer.addSubview(drinkList)
         print("HERE")
         drinkList.showsHorizontalScrollIndicator = true
         drinkList.translatesAutoresizingMaskIntoConstraints = false
         drinkList.dataSource = self
         drinkList.delegate = self
-        drinkList.register(DrinkListCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        drinkList.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         drinkList.backgroundColor = UIColor.red
+        drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
+        drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
+        drinkList.widthAnchor.constraint(equalTo: collectionViewContainer.widthAnchor).isActive = true
         view.setNeedsLayout()
     }
     
@@ -88,16 +93,25 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        let id = indexPath.row
-        let img = drinksModel.drinksListItem[id] == "frappe" ? #imageLiteral(resourceName: "frappe") : #imageLiteral(resourceName: "latte")
-        print(drinksModel.drinksListItem[id] )
-        let mycell = cell as! DrinkListCollectionViewCell
-        mycell.translatesAutoresizingMaskIntoConstraints = false
-        mycell.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        mycell.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        mycell.image = UIImageView(image: img)
-        return cell
+        let mycell = cell
+        //        let id = indexPath.row
+//        let img = drinksModel.drinksListItem[id] == "frappe" ? #imageLiteral(resourceName: "frappe") : #imageLiteral(resourceName: "latte")
+//        print(drinksModel.drinksListItem[id] )
+//        let mycell = cell as! DrinkListCollectionViewCell
+//        mycell.translatesAutoresizingMaskIntoConstraints = false
+//        mycell.image = UIImageView(image: img)
+
+        mycell.backgroundColor = UIColor.cyan
+        return mycell
     }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 200, height: 200)
+    }
+
+    
     
     
 }
