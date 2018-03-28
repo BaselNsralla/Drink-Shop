@@ -10,5 +10,6 @@ import Foundation
 
 struct DrinksModel {
     let drinksCount = 10
-    let drinksListItem = ["frappe", "latte","frappe", "latte","frappe", "latte","frappe", "latte","frappe", "latte"]
+    var drinksListItem = ["frappe", "latte","frappe", "latte","frappe", "latte","frappe", "latte","frappe", "latte"]
+    let currentDrink = "frappe"
 }

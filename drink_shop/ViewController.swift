@@ -10,9 +10,8 @@ import UIKit
 
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     let MARGIN: CGFloat = 3
-    let drinksModel = DrinksModel()
+    var drinksModel = DrinksModel()
     let drink = DrinkContainer()
-    let drinkCell = DrinkListCollectionViewCell()
     let collectionViewContainer = UIView()
     let orderButton : UIButton = {
         let btn = UIButton(type: .system)
@@ -62,11 +61,20 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
         orderButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
+        
+        orderButton.addTarget(self, action: #selector(ViewController.click(_:)), for: .touchDown)
+        
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        collectionViewContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        collectionViewContainer.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        collectionViewContainer.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         collectionViewContainer.topAnchor.constraint(equalTo: orderButton.bottomAnchor, constant: MARGIN).isActive = true
         collectionViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         collectionViewContainer.backgroundColor = UIColor.brown
+    }
+    
+    @objc
+    func click(_ sender: AnyObject?) {
+        drinksModel.drinksListItem.append(drinksModel.currentDrink)
     }
     
     func setupList () {
@@ -83,26 +91,31 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.backgroundColor = UIColor.red
         drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
         drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
-        drinkList.widthAnchor.constraint(equalTo: collectionViewContainer.widthAnchor).isActive = true
+        drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor).isActive = true
+        drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
+        
         view.setNeedsLayout()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return drinksModel.drinksCount
+        return drinksModel.drinksListItem.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        let mycell = cell
-        //        let id = indexPath.row
-//        let img = drinksModel.drinksListItem[id] == "frappe" ? #imageLiteral(resourceName: "frappe") : #imageLiteral(resourceName: "latte")
-//        print(drinksModel.drinksListItem[id] )
-//        let mycell = cell as! DrinkListCollectionViewCell
-//        mycell.translatesAutoresizingMaskIntoConstraints = false
-//        mycell.image = UIImageView(image: img)
-
-        mycell.backgroundColor = UIColor.cyan
-        return mycell
+        let id = indexPath.row
+        print(id)
+        let img = drinksModel.drinksListItem[id] == "frappe" ? #imageLiteral(resourceName: "frappe") : #imageLiteral(resourceName: "latte")
+        print(drinksModel.drinksListItem[id] )
+        
+        //mycell.translatesAutoresizingMaskIntoConstraints = false
+        let image = UIImageView(image: img)
+        cell.addSubview(image)
+        image.widthAnchor.constraint(equalTo: cell.widthAnchor).isActive = true
+        image.heightAnchor.constraint(equalTo: cell.heightAnchor).isActive = true
+        image.translatesAutoresizingMaskIntoConstraints = false
+        cell.backgroundColor = UIColor.cyan
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -110,9 +123,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 200, height: 200)
     }
-
+    
     
     
     
 }
+
 
