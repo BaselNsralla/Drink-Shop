@@ -14,6 +14,7 @@
 		FB3DC4CA20667A72004548AF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB3DC4C820667A72004548AF /* LaunchScreen.storyboard */; };
 		FB3DC4D220667AA3004548AF /* DrinkContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4D120667AA3004548AF /* DrinkContainer.swift */; };
 		FB3DC4D420670913004548AF /* DrinksModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4D320670913004548AF /* DrinksModel.swift */; };
+		FB3DC4DA206BF281004548AF /* DrinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4D9206BF281004548AF /* DrinkCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		FB3DC4CB20667A72004548AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FB3DC4D120667AA3004548AF /* DrinkContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkContainer.swift; sourceTree = "<group>"; };
 		FB3DC4D320670913004548AF /* DrinksModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinksModel.swift; sourceTree = "<group>"; };
+		FB3DC4D9206BF281004548AF /* DrinkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				FB3DC4C620667A72004548AF /* Assets.xcassets */,
 				FB3DC4C820667A72004548AF /* LaunchScreen.storyboard */,
 				FB3DC4CB20667A72004548AF /* Info.plist */,
+				FB3DC4D9206BF281004548AF /* DrinkCell.swift */,
 			);
 			path = drink_shop;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB3DC4D420670913004548AF /* DrinksModel.swift in Sources */,
+				FB3DC4DA206BF281004548AF /* DrinkCell.swift in Sources */,
 				FB3DC4D220667AA3004548AF /* DrinkContainer.swift in Sources */,
 				FB3DC4C220667A72004548AF /* ViewController.swift in Sources */,
 				FB3DC4C020667A72004548AF /* AppDelegate.swift in Sources */,
@@ -283,7 +287,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ML7RAUSDTN;
 				INFOPLIST_FILE = drink_shop/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mental.inc.drink-shop";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -297,7 +303,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ML7RAUSDTN;
 				INFOPLIST_FILE = drink_shop/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mental.inc.drink-shop";
 				PRODUCT_NAME = "$(TARGET_NAME)";

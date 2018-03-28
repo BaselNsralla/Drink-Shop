@@ -12,7 +12,24 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     let MARGIN: CGFloat = 3
     var drinksModel = DrinksModel()
     let drink = DrinkContainer()
+    var drinkList: UICollectionView
     let collectionViewContainer = UIView()
+    
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        super.init(coder: aDecoder)
+    }
+    
     let orderButton : UIButton = {
         let btn = UIButton(type: .system)
         btn.backgroundColor = UIColor(red: 204/255, green: 102/255, blue: 153/255,alpha:1)
@@ -49,7 +66,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.translatesAutoresizingMaskIntoConstraints = false
         drink.heightAnchor.constraint(equalToConstant: CGFloat(350)).isActive = true
         drink.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        drink.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        drink.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         drink.backgroundColor = UIColor(red: 204/255, green: 102/255, blue: 153/255, alpha:1)
         drink.layer.shadowColor = UIColor.black.cgColor
         drink.layer.shadowOpacity = 1
@@ -74,20 +91,22 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     @objc
     func click(_ sender: AnyObject?) {
+        
         drinksModel.drinksListItem.append(drinksModel.currentDrink)
+        drinkList.reloadData()
+        let ip = IndexPath(row: drinksModel.drinksListItem.count-1, section: 0)
+        drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
     }
     
     func setupList () {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        let drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionViewContainer.addSubview(drinkList)
         print("HERE")
+        
+        drinkList.register(DrinkCell.self, forCellWithReuseIdentifier: "cell")
         drinkList.showsHorizontalScrollIndicator = true
         drinkList.translatesAutoresizingMaskIntoConstraints = false
         drinkList.dataSource = self
         drinkList.delegate = self
-        drinkList.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         drinkList.backgroundColor = UIColor.red
         drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
         drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
@@ -101,19 +120,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return drinksModel.drinksListItem.count
     }
     
+
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
         let id = indexPath.row
+        print("section is ", indexPath.section, "     Item is ", indexPath.item)
+        
         print(id)
-        let img = drinksModel.drinksListItem[id] == "frappe" ? #imageLiteral(resourceName: "frappe") : #imageLiteral(resourceName: "latte")
+        //let img = drinksModel.drinksListItem[id] == "frappe" ? #imageLiteral(resourceName: "frappe") : #imageLiteral(resourceName: "latte")
         print(drinksModel.drinksListItem[id] )
         
         //mycell.translatesAutoresizingMaskIntoConstraints = false
-        let image = UIImageView(image: img)
-        cell.addSubview(image)
-        image.widthAnchor.constraint(equalTo: cell.widthAnchor).isActive = true
-        image.heightAnchor.constraint(equalTo: cell.heightAnchor).isActive = true
-        image.translatesAutoresizingMaskIntoConstraints = false
+        let image = UIImage(named: drinksModel.drinksListItem[id])
+        cell.image.image = image
+        
         cell.backgroundColor = UIColor.cyan
         return cell
     }
