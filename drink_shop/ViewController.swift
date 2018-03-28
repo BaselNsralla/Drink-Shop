@@ -19,6 +19,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
+        
+        layout.estimatedItemSize = CGSize(width: 150 , height: 150)
         drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
          super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
@@ -64,7 +66,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func setupViews () {
         
         drink.translatesAutoresizingMaskIntoConstraints = false
-        drink.heightAnchor.constraint(equalToConstant: CGFloat(350)).isActive = true
+        //drink.heightAnchor.constraint(equalToConstant: CGFloat(350)).isActive = true
+        drink.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -view.frame.height/1.8).isActive = true
         drink.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         drink.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         drink.backgroundColor = UIColor(red: 204/255, green: 102/255, blue: 153/255, alpha:1)
@@ -91,10 +94,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     @objc
     func click(_ sender: AnyObject?) {
-        
         drinksModel.drinksListItem.append(drinksModel.currentDrink)
         drinkList.reloadData()
-        let ip = IndexPath(row: drinksModel.drinksListItem.count-1, section: 0)
+        let ip = IndexPath(row: 0, section: drinksModel.drinksListItem.count-1)
         drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
     }
     
@@ -103,7 +105,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         print("HERE")
         
         drinkList.register(DrinkCell.self, forCellWithReuseIdentifier: "cell")
-        drinkList.showsHorizontalScrollIndicator = true
+        drinkList.showsHorizontalScrollIndicator = false
         drinkList.translatesAutoresizingMaskIntoConstraints = false
         drinkList.dataSource = self
         drinkList.delegate = self
@@ -117,14 +119,16 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return drinksModel.drinksListItem.count
     }
     
-
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
-        let id = indexPath.row
+        let id = indexPath.section
         print("section is ", indexPath.section, "     Item is ", indexPath.item)
         
         print(id)
@@ -142,7 +146,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 200, height: 200)
+        return CGSize(width: 150 , height: 150)
     }
     
     

@@ -18,9 +18,9 @@ class DrinkCell: UICollectionViewCell {
         self.addSubview(image)
         let padding: CGFloat = 10
         var top = image.topAnchor.constraint(equalTo: topAnchor, constant: padding)
-        var bottom = image.bottomAnchor.constraint(equalTo: bottomAnchor, constant: padding)
+        var bottom = image.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding)
         var left = image.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding)
-        var right = image.trailingAnchor.constraint(equalTo: trailingAnchor, constant: padding)
+        var right = image.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding)
         NSLayoutConstraint.activate([top, bottom, left, right])
         image.translatesAutoresizingMaskIntoConstraints = false
         
