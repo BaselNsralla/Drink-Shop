@@ -96,11 +96,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.reloadData()
         let ip = IndexPath(row: 0, section: drinksModel.drinksListItem.count-1)
         drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
-        animateDrinkPosition()
+        let animationGroup = CAAnimationGroup()
+        animationGroup.animations = [animateDrinkPosition(), animateDrinkScale()]
+//        animateDrinkPosition()
+//        animateDrinkScale()
     }
     
-    func animateDrinkPosition() {
-        var animatableView = drink.drinkImage
+    func animateDrinkPosition() -> CABasicAnimation {
+        let animatableView = drink.drinkImage
         let startX = drink.layer.position.x
         let startY = drink.layer.position.y
         let endX = drink.layer.position.x + 75
@@ -108,10 +111,22 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let startPoint = CGPoint(x: startX, y: startY)
       
         let endPoint = CGPoint(x: endX, y: endY)
-        let duration = 0.1
+        let duration: Double  = 4
         let positionAnimation = coreAnimationConstruction(startingPoint: startPoint, endingPoint: endPoint, animationDuration: duration)
-      animatableView.layer.add(positionAnimation, forKey: "drinkSwitchAnimation")
-      animatableView.layer.position = endPoint
+        animatableView.layer.add(positionAnimation, forKey: "drinkPosition")
+        animatableView.layer.position = endPoint
+        return positionAnimation
+    }
+    
+    func animateDrinkScale() -> CABasicAnimation {
+        let animatableView = drink.drinkImage
+        let startScale: CGFloat = 1
+        let endScale: CGFloat = 0.2
+        let dur: Double = 4
+        let scaleAnimation = coreAnimationScale(startingPoint: startScale, endingPoint: endScale, animationDuration: dur)
+        animatableView.layer.add(scaleAnimation, forKey: "transform.scale")
+        animatableView.layer.rasterizationScale = CGFloat(endScale)
+        return scaleAnimation
     }
     
     func setupList () {
@@ -166,8 +181,20 @@ extension ViewController {
         basicAnimation.fromValue = NSValue(cgPoint: startingPoint)
         basicAnimation.toValue = NSValue(cgPoint: endingPoint)
         basicAnimation.duration = animationDuration
-        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
         return basicAnimation
+    }
+    
+    private func coreAnimationScale(startingPoint: CGFloat, endingPoint: CGFloat, animationDuration: Double)
+        -> CABasicAnimation {
+            let basicAnimation = CABasicAnimation(keyPath: "transform.scale")
+            basicAnimation.fromValue = startingPoint
+            basicAnimation.toValue = endingPoint
+            basicAnimation.duration = animationDuration
+            basicAnimation.isRemovedOnCompletion = false
+            basicAnimation.fillMode = kCAFillModeForwards
+            //basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
+            return basicAnimation
     }
 }
 
