@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, CAAnimationDelegate {
     let MARGIN: CGFloat = 3
     var drinksModel = DrinksModel()
     let drink = DrinkContainer()
@@ -90,6 +90,24 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         collectionViewContainer.backgroundColor = UIColor.brown
     }
     
+    private func setupKeyFrameAnimations() {
+        let first_x = drink.layer.position.x
+        let first_y = drink.layer.position.y
+        let end_x = drink.layer.position.x + 75
+        let end_y = drink.layer.position.y - 50
+        let swing_x = end_x - 50
+        let swing_y = end_y + 25
+        
+        let keyFrameAnimation = CAKeyframeAnimation(keyPath: "position")
+        keyFrameAnimation.values = [CGPoint(x: end_x, y: end_y), CGPoint(x: swing_x, y: swing_y)]
+        keyFrameAnimation.keyTimes = [0, 0.5, 1]
+        keyFrameAnimation.duration = 1
+        keyFrameAnimation.isRemovedOnCompletion = false
+        keyFrameAnimation.fillMode = kCAFillModeForwards
+        drink.drinkImage.layer.add(keyFrameAnimation, forKey: "CurveSwing")
+    }
+    
+    
     @objc
     func click(_ sender: AnyObject?) {
         drinksModel.drinksListItem.append(drinksModel.currentDrink)
@@ -97,16 +115,16 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let ip = IndexPath(row: 0, section: drinksModel.drinksListItem.count-1)
         drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
         setupAnimations()
-//        animateDrinkPosition()
-//        animateDrinkScale()
+        setupKeyFrameAnimations()
     }
     
     private func setupAnimations() {
         let animatableView = drink.drinkImage
         let animationGroup = CAAnimationGroup()
-        let endPoint = CGPoint(x: drink.layer.position.x + 75, y: drink.layer.position.y - 50)
+        let endPoint = CGPoint(x: drink.layer.position.x + 25, y: drink.layer.position.y - 25)
         let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.7, duration: 0.2)
-        animationGroup.animations = [animateDrinkPosition(), animateDrinkScale(scaleAnimationModel)]
+        animationGroup.delegate = self
+        animationGroup.animations = [animateDrinkScale(scaleAnimationModel)]
         animationGroup.duration = 0.2
         animationGroup.fillMode = kCAFillModeForwards
         animationGroup.isRemovedOnCompletion = false
@@ -125,10 +143,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let endPoint = CGPoint(x: endX, y: endY)
         let duration: Double  = 0.2
         let positionAnimation = coreAnimationConstruction(startingPoint: startPoint, endingPoint: endPoint, animationDuration: duration)
-        
-        //animatableView.layer.add(positionAnimation, forKey: "drinkPosition")
-        
-        return positionAnimation
+       return positionAnimation
     }
     
     func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
@@ -165,7 +180,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
         let id = indexPath.section
-        print("section is ", indexPath.section, "     Item is ", indexPath.item)
+        print("section is ", indexPath.section, "  Item is ", indexPath.item)
         print(id)
         print(drinksModel.drinksListItem[id] )
         let image = UIImage(named: drinksModel.drinksListItem[id])
@@ -200,8 +215,10 @@ extension ViewController {
             basicAnimation.duration = animationDuration
             basicAnimation.isRemovedOnCompletion = false
             basicAnimation.fillMode = kCAFillModeForwards
-            //basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
             return basicAnimation
+    }
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        print("Finished scaling")
     }
 }
 
