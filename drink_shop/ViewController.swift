@@ -19,7 +19,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        
         layout.estimatedItemSize = CGSize(width: 150 , height: 150)
         drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
          super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -55,7 +54,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         view.addSubview(collectionViewContainer)
        
         setupViews()
-         setupList ()
+        setupList ()
     }
     
     override func didReceiveMemoryWarning() {
@@ -66,7 +65,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func setupViews () {
         
         drink.translatesAutoresizingMaskIntoConstraints = false
-        //drink.heightAnchor.constraint(equalToConstant: CGFloat(350)).isActive = true
         drink.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -view.frame.height/1.8).isActive = true
         drink.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         drink.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -98,6 +96,22 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.reloadData()
         let ip = IndexPath(row: 0, section: drinksModel.drinksListItem.count-1)
         drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
+        animateDrinkPosition()
+    }
+    
+    func animateDrinkPosition() {
+        var animatableView = drink.drinkImage
+        let startX = drink.layer.position.x
+        let startY = drink.layer.position.y
+        let endX = drink.layer.position.x + 75
+        let endY = drink.layer.position.y - 50
+        let startPoint = CGPoint(x: startX, y: startY)
+      
+        let endPoint = CGPoint(x: endX, y: endY)
+        let duration = 0.1
+        let positionAnimation = coreAnimationConstruction(startingPoint: startPoint, endingPoint: endPoint, animationDuration: duration)
+      animatableView.layer.add(positionAnimation, forKey: "drinkSwitchAnimation")
+      animatableView.layer.position = endPoint
     }
     
     func setupList () {
@@ -130,15 +144,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
         let id = indexPath.section
         print("section is ", indexPath.section, "     Item is ", indexPath.item)
-        
         print(id)
-        //let img = drinksModel.drinksListItem[id] == "frappe" ? #imageLiteral(resourceName: "frappe") : #imageLiteral(resourceName: "latte")
         print(drinksModel.drinksListItem[id] )
-        
-        //mycell.translatesAutoresizingMaskIntoConstraints = false
         let image = UIImage(named: drinksModel.drinksListItem[id])
         cell.image.image = image
-        
         cell.backgroundColor = UIColor.cyan
         return cell
     }
@@ -148,10 +157,27 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 150 , height: 150)
     }
-    
-    
-    
-    
 }
+
+
+extension ViewController {
+    private func coreAnimationConstruction(startingPoint: CGPoint, endingPoint: CGPoint, animationDuration : Double) -> CABasicAnimation {
+        let basicAnimation = CABasicAnimation(keyPath: "position")
+        basicAnimation.fromValue = NSValue(cgPoint: startingPoint)
+        basicAnimation.toValue = NSValue(cgPoint: endingPoint)
+        basicAnimation.duration = animationDuration
+        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        return basicAnimation
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
