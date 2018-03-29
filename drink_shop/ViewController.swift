@@ -96,14 +96,26 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.reloadData()
         let ip = IndexPath(row: 0, section: drinksModel.drinksListItem.count-1)
         drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
-        let animationGroup = CAAnimationGroup()
-        animationGroup.animations = [animateDrinkPosition(), animateDrinkScale()]
+        setupAnimations()
 //        animateDrinkPosition()
 //        animateDrinkScale()
     }
     
-    func animateDrinkPosition() -> CABasicAnimation {
+    private func setupAnimations() {
         let animatableView = drink.drinkImage
+        let animationGroup = CAAnimationGroup()
+        let endPoint = CGPoint(x: drink.layer.position.x + 75, y: drink.layer.position.y - 50)
+        let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.7, duration: 0.2)
+        animationGroup.animations = [animateDrinkPosition(), animateDrinkScale(scaleAnimationModel)]
+        animationGroup.duration = 0.2
+        animationGroup.fillMode = kCAFillModeForwards
+        animationGroup.isRemovedOnCompletion = false
+        animatableView.layer.add(animationGroup, forKey: "transform.scale")
+        animatableView.layer.contentsScale = scaleAnimationModel.to
+        animatableView.layer.position = endPoint
+    }
+    
+    func animateDrinkPosition() -> CABasicAnimation {
         let startX = drink.layer.position.x
         let startY = drink.layer.position.y
         let endX = drink.layer.position.x + 75
@@ -111,21 +123,16 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let startPoint = CGPoint(x: startX, y: startY)
       
         let endPoint = CGPoint(x: endX, y: endY)
-        let duration: Double  = 4
+        let duration: Double  = 0.2
         let positionAnimation = coreAnimationConstruction(startingPoint: startPoint, endingPoint: endPoint, animationDuration: duration)
-        animatableView.layer.add(positionAnimation, forKey: "drinkPosition")
-        animatableView.layer.position = endPoint
+        
+        //animatableView.layer.add(positionAnimation, forKey: "drinkPosition")
+        
         return positionAnimation
     }
     
-    func animateDrinkScale() -> CABasicAnimation {
-        let animatableView = drink.drinkImage
-        let startScale: CGFloat = 1
-        let endScale: CGFloat = 0.2
-        let dur: Double = 4
-        let scaleAnimation = coreAnimationScale(startingPoint: startScale, endingPoint: endScale, animationDuration: dur)
-        animatableView.layer.add(scaleAnimation, forKey: "transform.scale")
-        animatableView.layer.rasterizationScale = CGFloat(endScale)
+    func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
+        let scaleAnimation = coreAnimationScale(startingPoint: animationModel.from, endingPoint: animationModel.to, animationDuration: animationModel.duration)
         return scaleAnimation
     }
     
@@ -196,6 +203,12 @@ extension ViewController {
             //basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
             return basicAnimation
     }
+}
+
+struct ScaleAnimation {
+    let from: CGFloat
+    let to: CGFloat
+    let duration: Double
 }
 
 
