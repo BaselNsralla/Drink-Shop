@@ -93,15 +93,15 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     private func setupKeyFrameAnimations() {
         let first_x = drink.layer.position.x
         let first_y = drink.layer.position.y
-        let end_x = drink.layer.position.x + 75
+        let end_x = drink.layer.position.x + 100
         let end_y = drink.layer.position.y - 50
         let swing_x = end_x - 50
-        let swing_y = end_y + 25
+        let swing_y = end_y
         
         let keyFrameAnimation = CAKeyframeAnimation(keyPath: "position")
-        keyFrameAnimation.values = [CGPoint(x: end_x, y: end_y), CGPoint(x: swing_x, y: swing_y)]
-        keyFrameAnimation.keyTimes = [0, 0.5, 1]
-        keyFrameAnimation.duration = 1
+        keyFrameAnimation.values = [CGPoint(x: first_x, y: first_y), CGPoint(x: end_x, y: end_y), CGPoint(x: swing_x, y: swing_y)]
+        keyFrameAnimation.keyTimes = [0, 0.7, 1]
+        keyFrameAnimation.duration = 0.5
         keyFrameAnimation.isRemovedOnCompletion = false
         keyFrameAnimation.fillMode = kCAFillModeForwards
         drink.drinkImage.layer.add(keyFrameAnimation, forKey: "CurveSwing")
@@ -122,7 +122,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let animatableView = drink.drinkImage
         let animationGroup = CAAnimationGroup()
         let endPoint = CGPoint(x: drink.layer.position.x + 25, y: drink.layer.position.y - 25)
-        let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.7, duration: 0.2)
+        let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.4, duration: 0.2)
         animationGroup.delegate = self
         animationGroup.animations = [animateDrinkScale(scaleAnimationModel)]
         animationGroup.duration = 0.2
