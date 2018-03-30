@@ -12,4 +12,5 @@ struct DrinksModel {
     let drinksCount = 10
     var drinksListItem = ["frappe", "latte","frappe", "latte","frappe", "latte","frappe", "latte","frappe", "latte"]
     let currentDrink = "frappe"
+    let currentDrinkIndex = 0
 }

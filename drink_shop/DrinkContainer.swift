@@ -3,26 +3,36 @@ import UIKit
 
 class DrinkContainer: UIView {
     
-    let drinkImage : UIImageView = {
+    let frappeImage : UIImageView = {
         let image = UIImageView(image: #imageLiteral(resourceName: "frappe"))
         return image
     }()
+    let latteImage : UIImageView = {
+        let image = UIImageView(image: #imageLiteral(resourceName: "latte"))
+        return image
+    }()
     
+    var drinkImages = [UIImageView]()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(drinkImage)
+        drinkImages.append(frappeImage)
+        drinkImages.append(latteImage)
+        addSubview(frappeImage)
+        addSubview(latteImage)
         buildConstraint()
     }
     
     func buildConstraint() {
-        drinkImage.translatesAutoresizingMaskIntoConstraints = false
-        var left = drinkImage.leftAnchor.constraint(equalTo: leftAnchor, constant: 75)
-        var right = drinkImage.rightAnchor.constraint(equalTo: rightAnchor, constant: -75)
-        var top = drinkImage.topAnchor.constraint(equalTo: topAnchor, constant: 50)
-        var bottom = drinkImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50)
-        let constraints:Array<NSLayoutConstraint> = [left, right, top, bottom]
+       var constraints = [NSLayoutConstraint]()
+        for i in 0..<drinkImages.count {
+            drinkImages[i].translatesAutoresizingMaskIntoConstraints = false
+            let left = drinkImages[i].leftAnchor.constraint(equalTo: leftAnchor, constant: 80)
+            let right = drinkImages[i].rightAnchor.constraint(equalTo: rightAnchor, constant: -80)
+            let top = drinkImages[i].topAnchor.constraint(equalTo: topAnchor, constant: 65)
+            let bottom = drinkImages[i].bottomAnchor.constraint(equalTo: bottomAnchor, constant: -65)
+            constraints.append(contentsOf: [left, right, top, bottom])
+        }
         NSLayoutConstraint.activate(constraints)
-      
     }
     
     required init?(coder aDecoder: NSCoder) {

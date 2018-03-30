@@ -39,8 +39,27 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         btn.layer.shadowOffset = CGSize.zero
         btn.layer.shadowRadius = 10
         btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
+        btn.layer.cornerRadius = 5
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.setTitle("ORDER", for: .normal)
+        btn.setTitleColor(UIColor.white, for: .normal)
+        btn.setTitleShadowColor(UIColor.black, for: .normal)
+        btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        return btn
+    }()
+    
+    let switchButton : UIButton = {
+        let btn = UIButton(type: .system)
+        btn.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
+        btn.layer.shadowColor = UIColor.black.cgColor
+        btn.layer.shadowOpacity = 1
+        btn.layer.shadowOffset = CGSize.zero
+        btn.layer.shadowRadius = 10
+        btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
+        btn.layer.borderWidth = 3
+        btn.layer.cornerRadius = 5
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.setTitle("SWITCH", for: .normal)
         btn.setTitleColor(UIColor.white, for: .normal)
         btn.setTitleShadowColor(UIColor.black, for: .normal)
         btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
@@ -52,7 +71,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         view.addSubview(drink)
         view.addSubview(orderButton)
         view.addSubview(collectionViewContainer)
-       
+        view.addSubview(switchButton)
         setupViews()
         setupList ()
     }
@@ -75,13 +94,18 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.layer.shadowRadius = 10
         drink.layer.shadowPath = UIBezierPath(rect: drink.bounds).cgPath
 
-        orderButton.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        orderButton.widthAnchor.constraint(equalToConstant: view.frame.width/2).isActive = true
         orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
         orderButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        
+        orderButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: MARGIN).isActive = true
         orderButton.addTarget(self, action: #selector(ViewController.click(_:)), for: .touchDown)
         
+        switchButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
+        switchButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        switchButton.widthAnchor.constraint(equalToConstant: view.frame.width/2).isActive = true
+        switchButton.leftAnchor.constraint(equalTo: orderButton.rightAnchor, constant: MARGIN).isActive = true
+        switchButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -MARGIN).isActive = true
+        switchButton.addTarget(self, action: #selector(switchDrink(_:)), for: .touchDown)
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
         collectionViewContainer.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionViewContainer.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -91,11 +115,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     private func setupKeyFrameAnimations() {
+        let animatableView = drink.drinkImages[drinksModel.currentDrinkIndex]
         let first_x = drink.layer.position.x
         let first_y = drink.layer.position.y
-        let end_x = drink.layer.position.x + 100
-        let end_y = drink.layer.position.y - 50
-        let swing_x = end_x - 50
+        let end_x = drink.layer.position.x + 125
+        let end_y = drink.layer.position.y - 75
+        let swing_x = end_x - 25
         let swing_y = end_y
         
         let keyFrameAnimation = CAKeyframeAnimation(keyPath: "position")
@@ -104,7 +129,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         keyFrameAnimation.duration = 0.5
         keyFrameAnimation.isRemovedOnCompletion = false
         keyFrameAnimation.fillMode = kCAFillModeForwards
-        drink.drinkImage.layer.add(keyFrameAnimation, forKey: "CurveSwing")
+        animatableView.layer.add(keyFrameAnimation, forKey: "CurveSwing")
     }
     
     
@@ -114,12 +139,16 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.reloadData()
         let ip = IndexPath(row: 0, section: drinksModel.drinksListItem.count-1)
         drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
+    }
+    
+    @objc
+    func switchDrink(_ sender: AnyObject?) {
         setupAnimations()
         setupKeyFrameAnimations()
     }
     
     private func setupAnimations() {
-        let animatableView = drink.drinkImage
+        let animatableView = drink.drinkImages[drinksModel.currentDrinkIndex]
         let animationGroup = CAAnimationGroup()
         let endPoint = CGPoint(x: drink.layer.position.x + 25, y: drink.layer.position.y - 25)
         let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.4, duration: 0.2)
@@ -133,18 +162,18 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         animatableView.layer.position = endPoint
     }
     
-    func animateDrinkPosition() -> CABasicAnimation {
-        let startX = drink.layer.position.x
-        let startY = drink.layer.position.y
-        let endX = drink.layer.position.x + 75
-        let endY = drink.layer.position.y - 50
-        let startPoint = CGPoint(x: startX, y: startY)
-      
-        let endPoint = CGPoint(x: endX, y: endY)
-        let duration: Double  = 0.2
-        let positionAnimation = coreAnimationConstruction(startingPoint: startPoint, endingPoint: endPoint, animationDuration: duration)
-       return positionAnimation
-    }
+//    func animateDrinkPosition() -> CABasicAnimation {
+//        let startX = drink.layer.position.x
+//        let startY = drink.layer.position.y
+//        let endX = drink.layer.position.x + 75
+//        let endY = drink.layer.position.y - 50
+//        let startPoint = CGPoint(x: startX, y: startY)
+//
+//        let endPoint = CGPoint(x: endX, y: endY)
+//        let duration: Double  = 0.2
+//        let positionAnimation = coreAnimationConstruction(startingPoint: startPoint, endingPoint: endPoint, animationDuration: duration)
+//       return positionAnimation
+//    }
     
     func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
         let scaleAnimation = coreAnimationScale(startingPoint: animationModel.from, endingPoint: animationModel.to, animationDuration: animationModel.duration)
@@ -153,8 +182,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     func setupList () {
         collectionViewContainer.addSubview(drinkList)
-        print("HERE")
-        
         drinkList.register(DrinkCell.self, forCellWithReuseIdentifier: "cell")
         drinkList.showsHorizontalScrollIndicator = false
         drinkList.translatesAutoresizingMaskIntoConstraints = false
@@ -165,7 +192,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
         drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor).isActive = true
         drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
-        
         view.setNeedsLayout()
     }
     
