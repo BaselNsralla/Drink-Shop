@@ -12,24 +12,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     let MARGIN: CGFloat = 3
     var drinksModel = DrinksModel()
     let drink = DrinkContainer()
-    var drinkList: UICollectionView
+    var drinkList: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        return drinkList
+    }()
     let collectionViewContainer = UIView()
-    
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.estimatedItemSize = CGSize(width: 150 , height: 150)
-        drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
-         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
-        super.init(coder: aDecoder)
-    }
     
     let orderButton : UIButton = {
         let btn = UIButton(type: .system)
@@ -56,7 +45,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         btn.layer.shadowOffset = CGSize.zero
         btn.layer.shadowRadius = 10
         btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
-        btn.layer.borderWidth = 3
+        //btn.layer.borderWidth = 3
         btn.layer.cornerRadius = 5
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.setTitle("SWITCH", for: .normal)
@@ -73,13 +62,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         view.addSubview(collectionViewContainer)
         view.addSubview(switchButton)
         setupViews()
-        setupList ()
+        setupList (){}
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
     
     func setupViews () {
         
@@ -102,10 +90,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         switchButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
         switchButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        switchButton.widthAnchor.constraint(equalToConstant: view.frame.width/2).isActive = true
         switchButton.leftAnchor.constraint(equalTo: orderButton.rightAnchor, constant: MARGIN).isActive = true
         switchButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -MARGIN).isActive = true
         switchButton.addTarget(self, action: #selector(switchDrink(_:)), for: .touchDown)
+        
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
         collectionViewContainer.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionViewContainer.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -114,28 +102,50 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         collectionViewContainer.backgroundColor = UIColor.brown
     }
     
+    func setupList (clojure : () -> Void) {
+        collectionViewContainer.addSubview(drinkList)
+        drinkList.register(DrinkCell.self, forCellWithReuseIdentifier: "cell")
+        drinkList.showsHorizontalScrollIndicator = false
+        drinkList.translatesAutoresizingMaskIntoConstraints = false
+        drinkList.dataSource = self
+        drinkList.delegate = self
+        drinkList.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
+        drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
+        drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
+        drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor).isActive = true
+        drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
+        view.setNeedsLayout()
+        clojure()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        setupKeyFrameAnimations()
+        setupAnimations()
+    }
+    
+    
     private func setupKeyFrameAnimations() {
-        let animatableView = drink.drinkImages[drinksModel.currentDrinkIndex]
+        let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
+        let backView = drink.drinkImages[drinksModel.backgroundDrinkIndex]
         let first_x = drink.layer.position.x
         let first_y = drink.layer.position.y
         let end_x = drink.layer.position.x + 125
         let end_y = drink.layer.position.y - 75
         let swing_x = end_x - 25
         let swing_y = end_y
-        
-        let keyFrameAnimation = CAKeyframeAnimation(keyPath: "position")
-        keyFrameAnimation.values = [CGPoint(x: first_x, y: first_y), CGPoint(x: end_x, y: end_y), CGPoint(x: swing_x, y: swing_y)]
-        keyFrameAnimation.keyTimes = [0, 0.7, 1]
-        keyFrameAnimation.duration = 0.5
-        keyFrameAnimation.isRemovedOnCompletion = false
-        keyFrameAnimation.fillMode = kCAFillModeForwards
-        animatableView.layer.add(keyFrameAnimation, forKey: "CurveSwing")
+        let reverseKeyFrameModel = KeyFrameModel(start: CGPoint(x: swing_x, y: swing_y), end: CGPoint(x: first_x - 50, y: swing_y + 50), swing: CGPoint(x: first_x, y: first_y))
+        let keyFrameModel = KeyFrameModel(start: CGPoint(x: first_x, y: first_y), end: CGPoint(x: end_x, y: end_y), swing: CGPoint(x: swing_x, y: swing_y))
+        let frontToBack = makeKeyFramAnimation(keyFrameModel)
+        let backToFront = makeKeyFramAnimation(reverseKeyFrameModel)
+        backView.layer.add(backToFront, forKey: "backToFront")
+        frontView.layer.add(frontToBack, forKey: "frontToBack")
     }
     
+
     
     @objc
     func click(_ sender: AnyObject?) {
-        drinksModel.drinksListItem.append(drinksModel.currentDrink)
+        drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
         drinkList.reloadData()
         let ip = IndexPath(row: 0, section: drinksModel.drinksListItem.count-1)
         drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
@@ -143,82 +153,48 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     @objc
     func switchDrink(_ sender: AnyObject?) {
-        setupAnimations()
+        print(drinksModel.backgroundDrinkIndex, drinksModel.currentDrinkIndex)
         setupKeyFrameAnimations()
+        setupAnimations()
+        drinksModel.switchDrinks()
     }
     
     private func setupAnimations() {
-        let animatableView = drink.drinkImages[drinksModel.currentDrinkIndex]
+        let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
+        let backView = drink.drinkImages[drinksModel.backgroundDrinkIndex]
         let animationGroup = CAAnimationGroup()
+        let animationGroupReverse = CAAnimationGroup()
         let endPoint = CGPoint(x: drink.layer.position.x + 25, y: drink.layer.position.y - 25)
+        
         let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.4, duration: 0.2)
         animationGroup.delegate = self
         animationGroup.animations = [animateDrinkScale(scaleAnimationModel)]
         animationGroup.duration = 0.2
         animationGroup.fillMode = kCAFillModeForwards
         animationGroup.isRemovedOnCompletion = false
-        animatableView.layer.add(animationGroup, forKey: "transform.scale")
-        animatableView.layer.contentsScale = scaleAnimationModel.to
-        animatableView.layer.position = endPoint
+        
+        let scaleAnimationModelReverse = ScaleAnimation(from: 0.4, to: 1, duration: 0.2)
+        animationGroupReverse.delegate = self
+        animationGroupReverse.animations = [animateDrinkScale(scaleAnimationModelReverse)]
+        animationGroupReverse.duration = 0.2
+        animationGroupReverse.fillMode = kCAFillModeForwards
+        animationGroupReverse.isRemovedOnCompletion = false
+        
+        frontView.layer.zPosition = 1
+        backView.layer.zPosition = 2
+        
+        frontView.layer.add(animationGroup, forKey: "transform.scale")
+        backView.layer.add(animationGroupReverse, forKey: "transform.scale")
+        
+        frontView.layer.contentsScale = scaleAnimationModel.to
+        backView.layer.contentsScale = scaleAnimationModelReverse.to
+        frontView.layer.position = endPoint
+        backView.layer.position = endPoint
     }
-    
-//    func animateDrinkPosition() -> CABasicAnimation {
-//        let startX = drink.layer.position.x
-//        let startY = drink.layer.position.y
-//        let endX = drink.layer.position.x + 75
-//        let endY = drink.layer.position.y - 50
-//        let startPoint = CGPoint(x: startX, y: startY)
-//
-//        let endPoint = CGPoint(x: endX, y: endY)
-//        let duration: Double  = 0.2
-//        let positionAnimation = coreAnimationConstruction(startingPoint: startPoint, endingPoint: endPoint, animationDuration: duration)
-//       return positionAnimation
-//    }
     
     func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
         let scaleAnimation = coreAnimationScale(startingPoint: animationModel.from, endingPoint: animationModel.to, animationDuration: animationModel.duration)
         return scaleAnimation
-    }
-    
-    func setupList () {
-        collectionViewContainer.addSubview(drinkList)
-        drinkList.register(DrinkCell.self, forCellWithReuseIdentifier: "cell")
-        drinkList.showsHorizontalScrollIndicator = false
-        drinkList.translatesAutoresizingMaskIntoConstraints = false
-        drinkList.dataSource = self
-        drinkList.delegate = self
-        drinkList.backgroundColor = UIColor.red
-        drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
-        drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
-        drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor).isActive = true
-        drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
-        view.setNeedsLayout()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
-    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return drinksModel.drinksListItem.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
-        let id = indexPath.section
-        print("section is ", indexPath.section, "  Item is ", indexPath.item)
-        print(id)
-        print(drinksModel.drinksListItem[id] )
-        let image = UIImage(named: drinksModel.drinksListItem[id])
-        cell.image.image = image
-        cell.backgroundColor = UIColor.cyan
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 150 , height: 150)
     }
 }
 
@@ -243,8 +219,49 @@ extension ViewController {
             basicAnimation.fillMode = kCAFillModeForwards
             return basicAnimation
     }
+    
+    private func makeKeyFramAnimation (_ animationModel: KeyFrameModel) -> CAKeyframeAnimation {
+        let keyFrameAnimation = CAKeyframeAnimation(keyPath: "position")
+        keyFrameAnimation.values = [animationModel.start, animationModel.end, animationModel.swing]
+        keyFrameAnimation.keyTimes = [0.25, 0.7, 1]
+        keyFrameAnimation.duration = 0.5
+        keyFrameAnimation.isRemovedOnCompletion = false
+        keyFrameAnimation.fillMode = kCAFillModeForwards
+        return keyFrameAnimation
+    }
+    
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         print("Finished scaling")
+    }
+}
+
+
+extension ViewController {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
+        let id = indexPath.section
+        print("section is ", indexPath.section, "  Item is ", indexPath.item)
+        print(id)
+        print(drinksModel.drinksListItem[id] )
+        let image = UIImage(named: drinksModel.drinksListItem[id])
+        cell.image.image = image
+        cell.backgroundColor =  UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
+
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 150 , height: 150)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return drinksModel.drinksListItem.count
     }
 }
 
@@ -252,6 +269,12 @@ struct ScaleAnimation {
     let from: CGFloat
     let to: CGFloat
     let duration: Double
+}
+
+struct KeyFrameModel {
+    let start: CGPoint
+    let end: CGPoint
+    let swing: CGPoint
 }
 
 

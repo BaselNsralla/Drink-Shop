@@ -10,7 +10,24 @@ import Foundation
 
 struct DrinksModel {
     let drinksCount = 10
-    var drinksListItem = ["frappe", "latte","frappe", "latte","frappe", "latte","frappe", "latte","frappe", "latte"]
-    let currentDrink = "frappe"
-    let currentDrinkIndex = 0
+    var drinksListItem = [String]()
+    var currentDrink: a = .frappe
+    enum a: String {
+        case frappe = "frappe"
+        case latte = "latte"
+    }
+    var currentDrinkIndex = 0
+    var backgroundDrinkIndex = 1
+    
+    mutating func switchDrinks () {
+        currentDrinkIndex = currentDrinkIndex + backgroundDrinkIndex
+        backgroundDrinkIndex = currentDrinkIndex - backgroundDrinkIndex
+        currentDrinkIndex = currentDrinkIndex - backgroundDrinkIndex
+        switch currentDrink {
+            case .frappe : currentDrink = .latte
+            case .latte :currentDrink = .frappe
+        }
+        
+    }
+    
 }

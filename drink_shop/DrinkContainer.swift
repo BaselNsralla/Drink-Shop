@@ -17,13 +17,13 @@ class DrinkContainer: UIView {
         super.init(frame: frame)
         drinkImages.append(frappeImage)
         drinkImages.append(latteImage)
-        addSubview(frappeImage)
         addSubview(latteImage)
+        addSubview(frappeImage)
         buildConstraint()
     }
     
     func buildConstraint() {
-       var constraints = [NSLayoutConstraint]()
+        var constraints = [NSLayoutConstraint]()
         for i in 0..<drinkImages.count {
             drinkImages[i].translatesAutoresizingMaskIntoConstraints = false
             let left = drinkImages[i].leftAnchor.constraint(equalTo: leftAnchor, constant: 80)
@@ -33,6 +33,7 @@ class DrinkContainer: UIView {
             constraints.append(contentsOf: [left, right, top, bottom])
         }
         NSLayoutConstraint.activate(constraints)
+        //self.layer.setNeedsLayout()
     }
     
     required init?(coder aDecoder: NSCoder) {
