@@ -185,11 +185,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         frontView.layer.add(animationGroup, forKey: "transform.scale")
         backView.layer.add(animationGroupReverse, forKey: "transform.scale")
-        
+    
         frontView.layer.contentsScale = scaleAnimationModel.to
         backView.layer.contentsScale = scaleAnimationModelReverse.to
         frontView.layer.position = endPoint
         backView.layer.position = endPoint
+        let rotationDuration: Double = 0.2
+        UIView.animate(withDuration: rotationDuration, animations: {
+            backView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/4))
+            frontView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/4))
+        }){ (_) in
+            UIView.animate(withDuration: rotationDuration, animations: {
+                backView.transform = CGAffineTransform(rotationAngle: CGFloat(0))
+                frontView.transform = CGAffineTransform(rotationAngle: CGFloat(0))
+            })
+        }
     }
     
     func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
@@ -202,6 +212,15 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 extension ViewController {
     private func coreAnimationConstruction(startingPoint: CGPoint, endingPoint: CGPoint, animationDuration : Double) -> CABasicAnimation {
         let basicAnimation = CABasicAnimation(keyPath: "position")
+        basicAnimation.fromValue = NSValue(cgPoint: startingPoint)
+        basicAnimation.toValue = NSValue(cgPoint: endingPoint)
+        basicAnimation.duration = animationDuration
+        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
+        return basicAnimation
+    }
+    
+    private func coreAnimationRotation(startingPoint: CGPoint, endingPoint: CGPoint, animationDuration : Double) -> CABasicAnimation {
+        let basicAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
         basicAnimation.fromValue = NSValue(cgPoint: startingPoint)
         basicAnimation.toValue = NSValue(cgPoint: endingPoint)
         basicAnimation.duration = animationDuration
@@ -275,6 +294,9 @@ struct KeyFrameModel {
     let start: CGPoint
     let end: CGPoint
     let swing: CGPoint
+}
+struct rotationModal {
+    
 }
 
 
