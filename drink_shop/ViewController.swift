@@ -303,7 +303,7 @@ extension ViewController {
                 let previousCell = collectionView.cellForItem(at: IndexPath(row: 0, section:indexPath.section - 1 ))
             }
             let from = CGPoint(x: cell.layer.position.x, y: drink.drinkImages[drinksModel.currentDrinkIndex].layer.position.y)
-            let to = CGPoint(x: cell.layer.position.x, y: cell.layer.position.y)
+            let to = CGPoint(x: cell.layer.position.x, y: cell.layer.position.y+6)
             let springAnimation = coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.5))
             cell.layer.add(springAnimation, forKey: "springListCell")
 
