@@ -14,6 +14,12 @@ class DrinkContainer: UIView {
         return image
     }()
     
+    let card : UIImageView = {
+        let image = UIImageView(image: #imageLiteral(resourceName: "folded_card"))
+        image.frame = CGRect(x: 0, y: 0, width: 85, height: 75)
+        return image
+    }()
+    
     var drinkImages = [UIImageView]()
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,6 +27,7 @@ class DrinkContainer: UIView {
         drinkImages.append(latteImage)
         addSubview(latteImage)
         addSubview(frappeImage)
+        addSubview(card)
         buildConstraint()
     }
     
@@ -28,7 +35,7 @@ class DrinkContainer: UIView {
         var constraints = [NSLayoutConstraint]()
         for i in 0..<drinkImages.count {
             drinkImages[i].translatesAutoresizingMaskIntoConstraints = false
-            let right = drinkImages[i].rightAnchor.constraint(equalTo: rightAnchor, constant: -80)
+            let right = drinkImages[i].rightAnchor.constraint(equalTo: rightAnchor, constant: -70)
             let left = drinkImages[i].leftAnchor.constraint(equalTo: leftAnchor, constant: 80)
             let top = drinkImages[i].topAnchor.constraint(equalTo: topAnchor, constant: 50)
             let bottom = drinkImages[i].bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50)
@@ -36,6 +43,7 @@ class DrinkContainer: UIView {
         }
         NSLayoutConstraint.activate(constraints)
         //self.layer.setNeedsLayout()
+        card.layer.zPosition = 5
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -45,7 +45,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         btn.layer.shadowOffset = CGSize.zero
         btn.layer.shadowRadius = 10
         btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
-        //btn.layer.borderWidth = 3
         btn.layer.cornerRadius = 5
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.setTitle("SWITCH", for: .normal)
@@ -72,7 +71,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func setupViews () {
         
         drink.translatesAutoresizingMaskIntoConstraints = false
-        drink.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -view.frame.height/1.8).isActive = true
+        drink.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -1.5*view.frame.height/3).isActive = true
         drink.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         drink.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         drink.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -120,21 +119,23 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        //drink.frame.origin
+        drink.card.layer.position = CGPoint(x: (drink.bounds.minX + view.bounds.width/2) - 30, y: drink.bounds.maxY - 50)
         setupKeyFrameAnimations()
         setupAnimations()
     }
     
-    
     private func setupKeyFrameAnimations() {
         let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
         let backView = drink.drinkImages[drinksModel.backgroundDrinkIndex]
+        // This one should fix the center
         let first_x = drink.layer.position.x + 23
         let first_y = drink.layer.position.y
         let end_x = drink.layer.position.x + 125
         let end_y = drink.layer.position.y - 75
         let swing_x = end_x - 25
         let swing_y = end_y
-        let reverseKeyFrameModel = KeyFrameModel(start: CGPoint(x: swing_x, y: swing_y), end: CGPoint(x: first_x - 50, y: swing_y + 50), swing: CGPoint(x: first_x, y: first_y))
+        let reverseKeyFrameModel = KeyFrameModel(start: CGPoint(x: swing_x, y: swing_y), end: CGPoint(x: first_x , y: swing_y + 50), swing: CGPoint(x: first_x, y: first_y))
         let keyFrameModel = KeyFrameModel(start: CGPoint(x: first_x, y: first_y), end: CGPoint(x: end_x, y: end_y), swing: CGPoint(x: swing_x, y: swing_y))
         let frontToBack = makeKeyFramAnimation(keyFrameModel)
         let backToFront = makeKeyFramAnimation(reverseKeyFrameModel)
@@ -182,8 +183,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         animationGroupReverse.fillMode = kCAFillModeForwards
         animationGroupReverse.isRemovedOnCompletion = false
         
-        frontView.layer.zPosition = 1
-        backView.layer.zPosition = 2
+        frontView.layer.zPosition = 2
+        backView.layer.zPosition = 3
         
         frontView.layer.add(animationGroup, forKey: "transform.scale")
         backView.layer.add(animationGroupReverse, forKey: "transform.scale")
@@ -192,7 +193,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         backView.layer.contentsScale = scaleAnimationModelReverse.to
         frontView.layer.position = endPoint
         backView.layer.position = endPoint
-        UIView.animate(withDuration: rotationDuration, animations: {
+
+        UIView.animate(withDuration: rotationDuration,delay:0 ,options: UIViewAnimationOptions.curveEaseIn, animations: {
             backView.transform = CGAffineTransform(rotationAngle: CGFloat(Float.pi/2/4))
             frontView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/4))
         }){ (_) in
@@ -211,12 +213,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
 
 extension ViewController {
-    private func coreAnimationConstruction(startingPoint: CGPoint, endingPoint: CGPoint, animationDuration : Double) -> CABasicAnimation {
+    private func coreAnimationPosition(startingPoint: CGPoint, endingPoint: CGPoint, animationDuration : Double) -> CABasicAnimation {
         let basicAnimation = CABasicAnimation(keyPath: "position")
         basicAnimation.fromValue = NSValue(cgPoint: startingPoint)
         basicAnimation.toValue = NSValue(cgPoint: endingPoint)
         basicAnimation.duration = animationDuration
-        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
+        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
         return basicAnimation
     }
     
@@ -240,6 +242,18 @@ extension ViewController {
             return basicAnimation
     }
     
+    private func coreAnimationSpring(_ springPositionModel: PositionAnimation)
+        -> CASpringAnimation {
+            let springAnimation = CASpringAnimation(keyPath: "position")
+            springAnimation.fromValue = springPositionModel.from
+            springAnimation.toValue = springPositionModel.to
+            springAnimation.duration = springPositionModel.duration
+            springAnimation.damping = 1.0
+            springAnimation.isRemovedOnCompletion = false
+            springAnimation.fillMode = kCAFillModeForwards
+            return springAnimation
+    }
+    
     private func makeKeyFramAnimation (_ animationModel: KeyFrameModel) -> CAKeyframeAnimation {
         let keyFrameAnimation = CAKeyframeAnimation(keyPath: "position")
         keyFrameAnimation.values = [animationModel.start, animationModel.end, animationModel.swing]
@@ -247,6 +261,7 @@ extension ViewController {
         keyFrameAnimation.duration = 0.5
         keyFrameAnimation.isRemovedOnCompletion = false
         keyFrameAnimation.fillMode = kCAFillModeForwards
+        keyFrameAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
         return keyFrameAnimation
     }
     
@@ -262,6 +277,7 @@ extension ViewController {
         let id = indexPath.section
         print("section is ", indexPath.section, "  Item is ", indexPath.item)
         print(id)
+        print("Row", indexPath.row)
         print(drinksModel.drinksListItem[id] )
         let image = UIImage(named: drinksModel.drinksListItem[id])
         cell.image.image = image
@@ -280,18 +296,29 @@ extension ViewController {
         return 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-        
-    }
-    
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        
-        
+        if (indexPath.section == drinksModel.drinksListItem.count-1) {
+            
+            if collectionView.numberOfSections > 2 {
+                let previousCell = collectionView.cellForItem(at: IndexPath(row: 0, section:indexPath.section - 1 ))
+            }
+            let from = CGPoint(x: cell.layer.position.x, y: drink.drinkImages[drinksModel.currentDrinkIndex].layer.position.y)
+            let to = CGPoint(x: cell.layer.position.x, y: cell.layer.position.y)
+            let springAnimation = coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.5))
+            cell.layer.add(springAnimation, forKey: "springListCell")
+
+        }
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return drinksModel.drinksListItem.count
     }
+}
+
+struct PositionAnimation {
+    let from: CGPoint
+    let to: CGPoint
+    let duration: Double
 }
 
 struct ScaleAnimation {
@@ -305,9 +332,7 @@ struct KeyFrameModel {
     let end: CGPoint
     let swing: CGPoint
 }
-struct rotationModal {
-    
-}
+
 
 
 
