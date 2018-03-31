@@ -76,7 +76,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         drink.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         drink.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        drink.backgroundColor = UIColor(red: 204/255, green: 102/255, blue: 153/255, alpha:1)
+        drink.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1) //UIColor(red: 204/255, green: 102/255, blue: 153/255, alpha:1)
         drink.layer.shadowColor = UIColor.black.cgColor
         drink.layer.shadowOpacity = 1
         drink.layer.shadowOffset = CGSize.zero
