@@ -13,8 +13,8 @@ struct DrinksModel {
     var drinksListItem = [String]()
     var currentDrink: a = .frappe
     enum a: String {
-        case frappe = "frappe"
-        case latte = "latte"
+        case frappe = "frappe_straw"
+        case latte = "latte_straw"
     }
     var currentDrinkIndex = 0
     var backgroundDrinkIndex = 1

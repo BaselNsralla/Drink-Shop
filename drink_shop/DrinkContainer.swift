@@ -4,11 +4,13 @@ import UIKit
 class DrinkContainer: UIView {
     
     let frappeImage : UIImageView = {
-        let image = UIImageView(image: #imageLiteral(resourceName: "frappe"))
+        let image = UIImageView(image: #imageLiteral(resourceName: "frappe_straw"))
+        //image.frame = CGRect(x: 0, y: 0, width: 150, height: 250)
         return image
     }()
     let latteImage : UIImageView = {
-        let image = UIImageView(image: #imageLiteral(resourceName: "latte"))
+        let image = UIImageView(image: #imageLiteral(resourceName: "latte_straw"))
+        //image.frame = CGRect(x: 0, y: 0, width: 150, height: 250)
         return image
     }()
     
@@ -26,11 +28,11 @@ class DrinkContainer: UIView {
         var constraints = [NSLayoutConstraint]()
         for i in 0..<drinkImages.count {
             drinkImages[i].translatesAutoresizingMaskIntoConstraints = false
-            let left = drinkImages[i].leftAnchor.constraint(equalTo: leftAnchor, constant: 80)
             let right = drinkImages[i].rightAnchor.constraint(equalTo: rightAnchor, constant: -80)
-            let top = drinkImages[i].topAnchor.constraint(equalTo: topAnchor, constant: 65)
-            let bottom = drinkImages[i].bottomAnchor.constraint(equalTo: bottomAnchor, constant: -65)
-            constraints.append(contentsOf: [left, right, top, bottom])
+            let left = drinkImages[i].leftAnchor.constraint(equalTo: leftAnchor, constant: 80)
+            let top = drinkImages[i].topAnchor.constraint(equalTo: topAnchor, constant: 50)
+            let bottom = drinkImages[i].bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50)
+            constraints.append(contentsOf: [top, bottom, left, right])
         }
         NSLayoutConstraint.activate(constraints)
         //self.layer.setNeedsLayout()

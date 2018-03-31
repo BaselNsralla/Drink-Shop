@@ -73,7 +73,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         drink.translatesAutoresizingMaskIntoConstraints = false
         drink.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -view.frame.height/1.8).isActive = true
-        drink.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        drink.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        drink.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         drink.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         drink.backgroundColor = UIColor(red: 204/255, green: 102/255, blue: 153/255, alpha:1)
         drink.layer.shadowColor = UIColor.black.cgColor
@@ -81,7 +82,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.layer.shadowOffset = CGSize.zero
         drink.layer.shadowRadius = 10
         drink.layer.shadowPath = UIBezierPath(rect: drink.bounds).cgPath
-
+        
         orderButton.widthAnchor.constraint(equalToConstant: view.frame.width/2).isActive = true
         orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
         orderButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
@@ -127,7 +128,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     private func setupKeyFrameAnimations() {
         let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
         let backView = drink.drinkImages[drinksModel.backgroundDrinkIndex]
-        let first_x = drink.layer.position.x
+        let first_x = drink.layer.position.x + 23
         let first_y = drink.layer.position.y
         let end_x = drink.layer.position.x + 125
         let end_y = drink.layer.position.y - 75
@@ -165,6 +166,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let animationGroup = CAAnimationGroup()
         let animationGroupReverse = CAAnimationGroup()
         let endPoint = CGPoint(x: drink.layer.position.x + 25, y: drink.layer.position.y - 25)
+        let rotationDuration: Double = 0.2
         
         let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.4, duration: 0.2)
         animationGroup.delegate = self
@@ -190,9 +192,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         backView.layer.contentsScale = scaleAnimationModelReverse.to
         frontView.layer.position = endPoint
         backView.layer.position = endPoint
-        let rotationDuration: Double = 0.2
         UIView.animate(withDuration: rotationDuration, animations: {
-            backView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/4))
+            backView.transform = CGAffineTransform(rotationAngle: CGFloat(Float.pi/2/4))
             frontView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/4))
         }){ (_) in
             UIView.animate(withDuration: rotationDuration, animations: {
@@ -279,6 +280,15 @@ extension ViewController {
         return 1
     }
     
+    func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+        
+    }
+
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return drinksModel.drinksListItem.count
     }
