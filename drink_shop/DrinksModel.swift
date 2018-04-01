@@ -18,6 +18,7 @@ struct DrinksModel {
     }
     var currentDrinkIndex = 0
     var backgroundDrinkIndex = 1
+    var animatedLast = false
     
     mutating func switchDrinks () {
         currentDrinkIndex = currentDrinkIndex + backgroundDrinkIndex

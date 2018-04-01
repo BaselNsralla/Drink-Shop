@@ -9,15 +9,18 @@
 import UIKit
 
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, CAAnimationDelegate {
+    
     let MARGIN: CGFloat = 3
     var drinksModel = DrinksModel()
     let drink = DrinkContainer()
+    
     var drinkList: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let drinkList = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         return drinkList
     }()
+    
     let collectionViewContainer = UIView()
     
     let orderButton : UIButton = {
@@ -69,7 +72,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func setupViews () {
-        
         drink.translatesAutoresizingMaskIntoConstraints = false
         drink.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -1.5*view.frame.height/3).isActive = true
         drink.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
@@ -84,7 +86,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(switchDrink(_:)))
         swipeGesture.direction = .left
         drink.addGestureRecognizer(swipeGesture)
-        
         
         orderButton.widthAnchor.constraint(equalToConstant: view.frame.width/2).isActive = true
         orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
@@ -123,7 +124,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        //drink.frame.origin
         drink.card.layer.position = CGPoint(x: (drink.bounds.minX + view.bounds.width/2) - 30, y: drink.bounds.maxY - 50)
         setupKeyFrameAnimations()
         setupAnimations()
@@ -148,14 +148,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         frontView.layer.add(frontToBack, forKey: "frontToBack")
     }
     
-
-    
     @objc
     func click(_ sender: AnyObject?) {
-        drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
-        drinkList.reloadData()
-        let ip = IndexPath(row: 0, section: drinksModel.drinksListItem.count-1)
-        drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
+        self.drinksModel.drinksListItem.append(self.drinksModel.currentDrink.rawValue)
+        rotateDrink(){
+            self.drinkList.reloadData()
+            let ip = IndexPath(row: 0, section: self.drinksModel.drinksListItem.count-1)
+            self.drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
+        }
     }
     
     @objc
@@ -210,16 +210,25 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         }
     }
     
-    func rotateDrink () {
+    func rotateDrink (cellAnimation: @escaping () -> Void) {
         let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
-        let rotationDuration = 0.2
-        UIView.animate(withDuration: rotationDuration,delay:0 ,options: UIViewAnimationOptions.curveEaseIn, animations: {
-            frontView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/4))
-        }){ (_) in
-            UIView.animate(withDuration: rotationDuration, animations: {
+        let aDuration = 0.4
+        // Group these
+        UIView.animateKeyframes(withDuration: aDuration, delay: 0, options: [.calculationModeCubicPaced],
+            animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
+                frontView.transform = CGAffineTransform(translationX: -10, y:  -50)
+            })
+            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
+               frontView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/3))
+            })
+               
+        }, completion: { (_: Bool) in
+            cellAnimation()
+            UIView.animate(withDuration: 0.2, animations: {
                 frontView.transform = CGAffineTransform(rotationAngle: CGFloat(0))
             })
-        }
+        })
     }
     
     func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
@@ -230,11 +239,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
 
 extension ViewController {
-    private func coreAnimationPosition(startingPoint: CGPoint, endingPoint: CGPoint, animationDuration : Double) -> CABasicAnimation {
+    private func coreAnimationPosition(animationModel: PositionAnimation) -> CABasicAnimation {
         let basicAnimation = CABasicAnimation(keyPath: "position")
-        basicAnimation.fromValue = NSValue(cgPoint: startingPoint)
-        basicAnimation.toValue = NSValue(cgPoint: endingPoint)
-        basicAnimation.duration = animationDuration
+        basicAnimation.fromValue = NSValue(cgPoint: animationModel.from)
+        basicAnimation.toValue = NSValue(cgPoint: animationModel.to)
+        basicAnimation.duration = animationModel.duration
         basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
         return basicAnimation
     }
@@ -299,7 +308,6 @@ extension ViewController {
         let image = UIImage(named: drinksModel.drinksListItem[id])
         cell.image.image = image
         cell.backgroundColor =  UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
-
         return cell
     }
     
@@ -319,12 +327,10 @@ extension ViewController {
             if collectionView.numberOfSections > 2 {
                 let previousCell = collectionView.cellForItem(at: IndexPath(row: 0, section:indexPath.section - 1 ))
             }
-            rotateDrink()
             let from = CGPoint(x: cell.layer.position.x, y: -200)
             let to = CGPoint(x: cell.layer.position.x, y: cell.layer.position.y-41)
-            let springAnimation = coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.5))
+            let springAnimation = self.coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.5))
             cell.layer.add(springAnimation, forKey: "springListCell")
-
         }
     }
 
