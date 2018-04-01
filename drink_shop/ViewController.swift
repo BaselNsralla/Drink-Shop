@@ -57,12 +57,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return btn
     }()
 
+    let fxView : UIVisualEffectView = {
+        let view = UIVisualEffectView()
+        let effect = UIBlurEffect(style: UIBlurEffectStyle.dark)
+        view.effect = effect
+        return view
+           //fxView.frame = view.bounds
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(drink)
         view.addSubview(orderButton)
         view.addSubview(collectionViewContainer)
         view.addSubview(switchButton)
+        view.addSubview(fxView)
         setupViews()
         setupList (){}
     }
@@ -148,24 +157,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         frontView.layer.add(frontToBack, forKey: "frontToBack")
     }
     
-    @objc
-    func click(_ sender: AnyObject?) {
-        self.drinksModel.drinksListItem.append(self.drinksModel.currentDrink.rawValue)
-        rotateDrink(){
-            self.drinkList.reloadData()
-            let ip = IndexPath(row: 0, section: self.drinksModel.drinksListItem.count-1)
-            self.drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
-        }
-    }
-    
-    @objc
-    func switchDrink(_ sender: AnyObject?) {
-        print(drinksModel.backgroundDrinkIndex, drinksModel.currentDrinkIndex)
-        setupKeyFrameAnimations()
-        setupAnimations()
-        drinksModel.switchDrinks()
-    }
-    
+
     private func setupAnimations() {
         let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
         let backView = drink.drinkImages[drinksModel.backgroundDrinkIndex]
@@ -298,6 +290,32 @@ extension ViewController {
 
 
 extension ViewController {
+    
+    @objc func drinkTapped(_ sender: UICollectionViewCell) {
+        fxView.frame = view.bounds
+    }
+    
+    @objc
+    func click(_ sender: AnyObject?) {
+        self.drinksModel.drinksListItem.append(self.drinksModel.currentDrink.rawValue)
+        rotateDrink(){
+            self.drinkList.reloadData()
+            let ip = IndexPath(row: 0, section: self.drinksModel.drinksListItem.count-1)
+            self.drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
+        }
+    }
+    
+    @objc
+    func switchDrink(_ sender: AnyObject?) {
+        print(drinksModel.backgroundDrinkIndex, drinksModel.currentDrinkIndex)
+        setupKeyFrameAnimations()
+        setupAnimations()
+        drinksModel.switchDrinks()
+    }
+    
+}
+
+extension ViewController {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
         let id = indexPath.section
@@ -308,6 +326,9 @@ extension ViewController {
         let image = UIImage(named: drinksModel.drinksListItem[id])
         cell.image.image = image
         cell.backgroundColor =  UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
+        let listener = #selector(drinkTapped(_:))
+        let gesture = UITapGestureRecognizer(target: self, action: listener)
+        cell.addGestureRecognizer(gesture)
         return cell
     }
     
