@@ -123,6 +123,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.card.layer.position = CGPoint(x: (drink.bounds.minX + view.bounds.width/2) - 30, y: drink.bounds.maxY - 50)
         setupKeyFrameAnimations()
         setupAnimations()
+        drinksModel.switchDrinks()
     }
     
     private func setupKeyFrameAnimations() {
@@ -205,6 +206,18 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         }
     }
     
+    func rotateDrink () {
+        let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
+        let rotationDuration = 0.2
+        UIView.animate(withDuration: rotationDuration,delay:0 ,options: UIViewAnimationOptions.curveEaseIn, animations: {
+            frontView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/4))
+        }){ (_) in
+            UIView.animate(withDuration: rotationDuration, animations: {
+                frontView.transform = CGAffineTransform(rotationAngle: CGFloat(0))
+            })
+        }
+    }
+    
     func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
         let scaleAnimation = coreAnimationScale(startingPoint: animationModel.from, endingPoint: animationModel.to, animationDuration: animationModel.duration)
         return scaleAnimation
@@ -248,7 +261,7 @@ extension ViewController {
             springAnimation.fromValue = springPositionModel.from
             springAnimation.toValue = springPositionModel.to
             springAnimation.duration = springPositionModel.duration
-            springAnimation.damping = 1.0
+            springAnimation.damping = 2.0
             springAnimation.isRemovedOnCompletion = false
             springAnimation.fillMode = kCAFillModeForwards
             return springAnimation
@@ -302,8 +315,9 @@ extension ViewController {
             if collectionView.numberOfSections > 2 {
                 let previousCell = collectionView.cellForItem(at: IndexPath(row: 0, section:indexPath.section - 1 ))
             }
-            let from = CGPoint(x: cell.layer.position.x, y: drink.drinkImages[drinksModel.currentDrinkIndex].layer.position.y)
-            let to = CGPoint(x: cell.layer.position.x, y: cell.layer.position.y+6)
+            rotateDrink()
+            let from = CGPoint(x: cell.layer.position.x, y: -200)
+            let to = CGPoint(x: cell.layer.position.x, y: cell.layer.position.y-41)
             let springAnimation = coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.5))
             cell.layer.add(springAnimation, forKey: "springListCell")
 
