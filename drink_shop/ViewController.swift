@@ -81,6 +81,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.layer.shadowOffset = CGSize.zero
         drink.layer.shadowRadius = 10
         drink.layer.shadowPath = UIBezierPath(rect: drink.bounds).cgPath
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(switchDrink(_:)))
+        swipeGesture.direction = .left
+        drink.addGestureRecognizer(swipeGesture)
+        
         
         orderButton.widthAnchor.constraint(equalToConstant: view.frame.width/2).isActive = true
         orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
