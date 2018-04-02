@@ -94,6 +94,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.layer.shadowPath = UIBezierPath(rect: drink.bounds).cgPath
         let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(switchDrink(_:)))
         swipeGesture.direction = .left
+        swipeGesture.cancelsTouchesInView = false
         drink.addGestureRecognizer(swipeGesture)
         
         orderButton.widthAnchor.constraint(equalToConstant: view.frame.width/2).isActive = true
@@ -128,6 +129,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
         drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor).isActive = true
         drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
+        drinkList.isUserInteractionEnabled = true
         view.setNeedsLayout()
         clojure()
     }
@@ -361,7 +363,12 @@ extension ViewController {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("SELECTED ITEM")
         let cell = collectionView.cellForItem(at: indexPath)
-        modalView.showModal(at: cell!.bounds)
+        if let drinkCell = cell {
+            print("the cells layer x value is ", drinkCell.layer.position.x)
+            print("the cells frame x value is ", drinkCell.frame.minX)
+            print("the cells frame x value is ", drinkCell.bounds.minX)
+            modalView.showModal(at: drinkCell.frame)
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
