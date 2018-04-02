@@ -266,9 +266,9 @@ extension ViewController {
             springAnimation.fromValue = springPositionModel.from
             springAnimation.toValue = springPositionModel.to
             springAnimation.duration = springPositionModel.duration
-            springAnimation.damping = 2.0
-            springAnimation.isRemovedOnCompletion = false
-            springAnimation.fillMode = kCAFillModeForwards
+            springAnimation.damping = 8
+            springAnimation.isRemovedOnCompletion = true
+            //springAnimation.fillMode = kCAFillModeForwards
             return springAnimation
     }
     
@@ -298,6 +298,7 @@ extension ViewController {
     
     @objc
     func click(_ sender: AnyObject?) {
+        drinksModel.animatedLast = false
         self.drinksModel.drinksListItem.append(self.drinksModel.currentDrink.rawValue)
         rotateDrink(){
             self.drinkList.reloadData()
@@ -344,14 +345,15 @@ extension ViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if (indexPath.section == drinksModel.drinksListItem.count-1) {
-            
+        if (indexPath.section == drinksModel.drinksListItem.count-1 && !drinksModel.animatedLast) {
+            drinksModel.animatedLast = true
+            let drinkCell = cell as! DrinkCell
             if collectionView.numberOfSections > 2 {
                 let previousCell = collectionView.cellForItem(at: IndexPath(row: 0, section:indexPath.section - 1 ))
             }
-            let from = CGPoint(x: cell.layer.position.x, y: -200)
-            let to = CGPoint(x: cell.layer.position.x, y: cell.layer.position.y-41)
-            let springAnimation = self.coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.5))
+            let from = CGPoint(x: cell.layer.position.x, y: -10)
+            let to = CGPoint(x: cell.layer.position.x, y: drinkCell.layer.position.y )
+            let springAnimation = self.coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.2))
             cell.layer.add(springAnimation, forKey: "springListCell")
         }
     }

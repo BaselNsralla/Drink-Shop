@@ -13,17 +13,19 @@ class DrinkCell: UICollectionViewCell {
        let imageView = UIImageView()
        return imageView
     }()
+    var cellPadding: CGFloat?
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(image)
-        let padding: CGFloat = 10
-        var top = image.topAnchor.constraint(equalTo: topAnchor, constant: padding)
-        var bottom = image.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding)
-        var left = image.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding)
-        var right = image.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding)
-        NSLayoutConstraint.activate([top, bottom, left, right])
         image.translatesAutoresizingMaskIntoConstraints = false
-        
+        cellPadding = 10
+        if  let padding = cellPadding {
+            var top = image.topAnchor.constraint(equalTo: topAnchor, constant: padding)
+            var bottom = image.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding)
+            var left = image.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding)
+            var right = image.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding)
+            NSLayoutConstraint.activate([top, bottom, left, right])
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
