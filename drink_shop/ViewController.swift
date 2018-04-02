@@ -99,12 +99,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         orderButton.widthAnchor.constraint(equalToConstant: view.frame.width/2).isActive = true
         orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
-        orderButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        orderButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
         orderButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: MARGIN).isActive = true
         orderButton.addTarget(self, action: #selector(ViewController.click(_:)), for: .touchDown)
         
         switchButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
-        switchButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        switchButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
         switchButton.leftAnchor.constraint(equalTo: orderButton.rightAnchor, constant: MARGIN).isActive = true
         switchButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -MARGIN).isActive = true
         switchButton.addTarget(self, action: #selector(switchDrink(_:)), for: .touchDown)
@@ -327,7 +327,7 @@ extension ViewController {
         print(id)
         print("Row", indexPath.row)
         print(drinksModel.drinksListItem[id] )
-        let image = UIImage(named: drinksModel.drinksListItem[id])
+        let image = UIImage(named: drinksModel.drinksListItem[id]+"_"+"list")
         cell.image.image = image
         cell.backgroundColor =  UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
         //let listener = #selector(drinkTapped(_:))
@@ -339,7 +339,7 @@ extension ViewController {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 150 , height: 150)
+        return CGSize(width: 110 , height: 175)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -363,12 +363,7 @@ extension ViewController {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("SELECTED ITEM")
         let cell = collectionView.cellForItem(at: indexPath)
-        if let drinkCell = cell {
-            print("the cells layer x value is ", drinkCell.layer.position.x)
-            print("the cells frame x value is ", drinkCell.frame.minX)
-            print("the cells frame x value is ", drinkCell.bounds.minX)
-            modalView.showModal(at: drinkCell.frame)
-        }
+        modalView.showModal(at:  CGPoint(x: view.frame.midX, y: collectionView.frame.maxY))
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

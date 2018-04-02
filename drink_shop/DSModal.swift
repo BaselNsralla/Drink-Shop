@@ -9,15 +9,15 @@
 import UIKit
 
 class DSModal: NSObject {
-    func showModal(at frame: CGRect) {
+    func showModal(at point: CGPoint) {
         if let keyWindow = UIApplication.shared.keyWindow {
             let view = UIView(frame: keyWindow.frame)
             view.backgroundColor = UIColor.blue
-            print(frame.minX)
-            view.frame = CGRect(x: frame.minX, y: frame.minY, width: 20, height: 20)
+            print(point.x)
+            view.frame = CGRect(x: point.x, y: point.y, width: 20, height: 20)
             keyWindow.addSubview(view)
             UIView.animate(withDuration: 0.5, animations: {
-                view.transform = CGAffineTransform(translationX: 0, y: +140)
+                view.transform = CGAffineTransform(translationX: 0, y: -140)
             })
             
         }
