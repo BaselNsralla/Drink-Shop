@@ -22,10 +22,16 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }()
     
     let collectionViewContainer = UIView()
+    var textView: UILabel?
+    let localAttributes: [NSAttributedStringKey : Any]? = [
+        .foregroundColor: Colors.pink,
+        .strokeWidth: -3.5,
+        .font: UIFont.boldSystemFont(ofSize: 75)
+    ]
     
     let orderButton : UIButton = {
         let btn = UIButton(type: .system)
-        btn.backgroundColor = UIColor(red: 204/255, green: 21/255, blue: 153/255,alpha:1)
+        btn.backgroundColor = Colors.pink
         btn.layer.shadowColor = UIColor.black.cgColor
         btn.layer.shadowOpacity = 1
         btn.layer.shadowOffset = CGSize.zero
@@ -43,7 +49,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     let switchButton : UIButton = {
         let btn = UIButton(type: .system)
-        btn.backgroundColor = UIColor(red: 75/255, green: 21/255, blue: 130/255,alpha:1)
+        btn.backgroundColor = Colors.purple
         btn.layer.shadowColor = UIColor.black.cgColor
         btn.layer.shadowOpacity = 1
         btn.layer.shadowOffset = CGSize.zero
@@ -69,6 +75,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = Colors.blue
         view.addSubview(drink)
         view.addSubview(orderButton)
         view.addSubview(collectionViewContainer)
@@ -76,6 +83,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         view.addSubview(fxView)
         setupViews()
         setupList(){}
+        setupText()
     }
     
     override func didReceiveMemoryWarning() {
@@ -88,7 +96,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drink.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         drink.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         drink.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        drink.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1) //UIColor(red: 204/255, green: 102/255, blue: 153/255, alpha:1)
+        drink.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
         drink.layer.shadowColor = UIColor.black.cgColor
         drink.layer.shadowOpacity = 1
         drink.layer.shadowOffset = CGSize.zero
@@ -119,7 +127,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         collectionViewContainer.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         collectionViewContainer.topAnchor.constraint(equalTo: orderButton.bottomAnchor, constant: MARGIN).isActive = true
         collectionViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        collectionViewContainer.backgroundColor = UIColor.brown
+        collectionViewContainer.backgroundColor = Colors.purple
     }
     
     func setupList (clojure : () -> Void) {
@@ -129,15 +137,32 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.translatesAutoresizingMaskIntoConstraints = false
         drinkList.dataSource = self
         drinkList.delegate = self
-        drinkList.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
+        drinkList.backgroundColor = Colors.purple
         drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
         drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
-        drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor, constant: -view.frame.width/2).isActive = true
+        drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor, constant: -view.frame.width/2 + 10).isActive = true
         drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
         drinkList.isUserInteractionEnabled = true
         view.setNeedsLayout()
         //view.layoutSubviews()
         clojure()
+    }
+    
+    func setupText() {
+        //var font = UIFont.preferredFont(forTextStyle: .headline)
+        let costText = NSAttributedString(string: drinksModel.cost, attributes: localAttributes)
+        textView = UILabel()
+        textView?.textAlignment = .center
+        if let textViewObject = textView {
+            textViewObject.attributedText = costText
+            collectionViewContainer.addSubview(textViewObject)
+            textViewObject.translatesAutoresizingMaskIntoConstraints = false
+            let left = textViewObject.leftAnchor.constraint(equalTo: drinkList.rightAnchor)
+            let right = textViewObject.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor)
+            let top = textViewObject.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor)
+            let bottom = textViewObject.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor)
+            NSLayoutConstraint.activate([left, right, top, bottom])
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -307,7 +332,9 @@ extension ViewController {
     @objc
     func click(_ sender: AnyObject?) {
         drinksModel.animatedLast = false
-        self.drinksModel.drinksListItem.append(self.drinksModel.currentDrink.rawValue)
+        drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
+        drinksModel.buy(drink: drinksModel.currentDrink)
+        updatePriceFromModel()
         rotateDrink(){
             self.drinkList.reloadData()
             let ip = IndexPath(row: 0, section: self.drinksModel.drinksListItem.count-1)
@@ -336,9 +363,6 @@ extension ViewController {
         let image = UIImage(named: drinksModel.drinksListItem[id]+"_"+"list")
         cell.image.image = image
         cell.backgroundColor =  UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
-        //let listener = #selector(drinkTapped(_:))
-        //let gesture = UITapGestureRecognizer(target: self, action: listener)
-        //cell.addGestureRecognizer(gesture)
         return cell
     }
     
@@ -376,6 +400,22 @@ extension ViewController {
         return drinksModel.drinksListItem.count
     }
 }
+
+extension ViewController {
+    func updatePriceFromModel() {
+        if let textViewObject = textView {
+            let text = drinksModel.cost
+            textViewObject.attributedText = NSMutableAttributedString(string: text, attributes: localAttributes)
+            //textViewObject.text = textViewObject.attributedText!.string
+            //textViewObject.adjustsFontSizeToFitWidth = true
+//            textViewObject.text = drinksModel.cost
+//            textViewObject.font = UIFont.boldSystemFont(ofSize: 30)
+//            textViewObject.textColor = Colors.pink
+        }
+    }
+}
+
+
 
 struct PositionAnimation {
     let from: CGPoint

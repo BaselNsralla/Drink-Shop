@@ -11,11 +11,15 @@ import Foundation
 struct DrinksModel {
     let drinksCount = 10
     var drinksListItem = [String]()
-    var currentDrink: a = .frappe
-    enum a: String {
+    var currentDrink: drinkPick = .frappe
+    var currency = "$"
+    var cost:String
+    enum drinkPick: String {
         case frappe = "frappe_straw"
         case latte = "latte_straw"
     }
+    //enum price: Str
+    var prices : [drinkPick : Int] = [.frappe: 10, .latte: 15]
     var currentDrinkIndex = 0
     var backgroundDrinkIndex = 1
     var animatedLast = false
@@ -28,7 +32,16 @@ struct DrinksModel {
             case .frappe : currentDrink = .latte
             case .latte :currentDrink = .frappe
         }
-        
+    }
+    init() {
+        cost = "10" + self.currency
+    }
+    mutating func buy(drink: drinkPick) {
+        let sequence = cost.split(separator: "$")
+        let oldCost = sequence[sequence.startIndex]
+        var newCost = Int(oldCost)! + prices[drink]!
+        cost = String(newCost) + currency
+        print(cost)
     }
     
 }
