@@ -25,35 +25,37 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     let orderButton : UIButton = {
         let btn = UIButton(type: .system)
-        btn.backgroundColor = UIColor(red: 204/255, green: 102/255, blue: 153/255,alpha:1)
+        btn.backgroundColor = UIColor(red: 204/255, green: 21/255, blue: 153/255,alpha:1)
         btn.layer.shadowColor = UIColor.black.cgColor
         btn.layer.shadowOpacity = 1
         btn.layer.shadowOffset = CGSize.zero
         btn.layer.shadowRadius = 10
         btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
-        btn.layer.cornerRadius = 5
+        //btn.layer.cornerRadius = 0.5 * btn.bounds.size.width
+         btn.layer.cornerRadius = 65/2
         btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.setTitle("ORDER", for: .normal)
-        btn.setTitleColor(UIColor.white, for: .normal)
-        btn.setTitleShadowColor(UIColor.black, for: .normal)
-        btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        //btn.setTitle("ORDER", for: .normal)
+        //btn.setTitleColor(UIColor.white, for: .normal)
+        //btn.setTitleShadowColor(UIColor.black, for: .normal)
+        //btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
         return btn
     }()
     
     let switchButton : UIButton = {
         let btn = UIButton(type: .system)
-        btn.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
+        btn.backgroundColor = UIColor(red: 75/255, green: 21/255, blue: 130/255,alpha:1)
         btn.layer.shadowColor = UIColor.black.cgColor
         btn.layer.shadowOpacity = 1
         btn.layer.shadowOffset = CGSize.zero
         btn.layer.shadowRadius = 10
         btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
-        btn.layer.cornerRadius = 5
+        //btn.layer.cornerRadius = 0.5 * btn.bounds.size.width
         btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.setTitle("SWITCH", for: .normal)
-        btn.setTitleColor(UIColor.white, for: .normal)
-        btn.setTitleShadowColor(UIColor.black, for: .normal)
-        btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        btn.layer.cornerRadius = 65/2
+        //btn.setTitle("SWITCH", for: .normal)
+        //btn.setTitleColor(UIColor.white, for: .normal)
+        //btn.setTitleShadowColor(UIColor.black, for: .normal)
+        //btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
         return btn
     }()
 
@@ -73,7 +75,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         view.addSubview(switchButton)
         view.addSubview(fxView)
         setupViews()
-        setupList (){}
+        setupList(){}
     }
     
     override func didReceiveMemoryWarning() {
@@ -97,17 +99,20 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         swipeGesture.cancelsTouchesInView = false
         drink.addGestureRecognizer(swipeGesture)
         
-        orderButton.widthAnchor.constraint(equalToConstant: view.frame.width/2).isActive = true
+        orderButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
         orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
         orderButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
         orderButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: MARGIN).isActive = true
+        //orderButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         orderButton.addTarget(self, action: #selector(ViewController.click(_:)), for: .touchDown)
         
         switchButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
         switchButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
-        switchButton.leftAnchor.constraint(equalTo: orderButton.rightAnchor, constant: MARGIN).isActive = true
+        switchButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
+        //switchButton.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         switchButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -MARGIN).isActive = true
         switchButton.addTarget(self, action: #selector(switchDrink(_:)), for: .touchDown)
+        
         
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
         collectionViewContainer.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
@@ -127,10 +132,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
         drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
         drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
-        drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor).isActive = true
+        drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor, constant: -view.frame.width/2).isActive = true
         drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
         drinkList.isUserInteractionEnabled = true
         view.setNeedsLayout()
+        //view.layoutSubviews()
         clojure()
     }
     
