@@ -13,7 +13,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     let MARGIN: CGFloat = 3
     var drinksModel = DrinksModel()
     let drink = DrinkContainer()
-    
+    let modalView = DSModal()
     var drinkList: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -292,7 +292,8 @@ extension ViewController {
 extension ViewController {
     
     @objc func drinkTapped(_ sender: UICollectionViewCell) {
-        fxView.frame = view.bounds
+        //fxView.frame = view.bounds
+        //modalView.showModal(at: sender.frame)
     }
     
     @objc
@@ -326,9 +327,9 @@ extension ViewController {
         let image = UIImage(named: drinksModel.drinksListItem[id])
         cell.image.image = image
         cell.backgroundColor =  UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
-        let listener = #selector(drinkTapped(_:))
-        let gesture = UITapGestureRecognizer(target: self, action: listener)
-        cell.addGestureRecognizer(gesture)
+        //let listener = #selector(drinkTapped(_:))
+        //let gesture = UITapGestureRecognizer(target: self, action: listener)
+        //cell.addGestureRecognizer(gesture)
         return cell
     }
     
@@ -355,6 +356,12 @@ extension ViewController {
         }
     }
 
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("SELECTED ITEM")
+        let cell = collectionView.cellForItem(at: indexPath)
+        modalView.showModal(at: cell!.bounds)
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return drinksModel.drinksListItem.count
     }
