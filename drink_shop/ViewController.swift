@@ -8,11 +8,17 @@
 
 import UIKit
 
+protocol DrinkViewDelegate {
+    func switchDrink()
+    func orderDrink()
+}
+
+
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, CAAnimationDelegate {
     
     let MARGIN: CGFloat = 3
     var drinksModel = DrinksModel()
-    let drink = DrinkContainer()
+    let drinkView = DrinkView()
     let modalView = DSModal()
     var drinkList: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -75,8 +81,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        drinkView.delegate = self
         view.backgroundColor = Colors.blue
-        view.addSubview(drink)
+        view.addSubview(drinkView)
         view.addSubview(orderButton)
         view.addSubview(collectionViewContainer)
         view.addSubview(switchButton)
@@ -91,30 +98,30 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func setupViews () {
-        drink.translatesAutoresizingMaskIntoConstraints = false
-        drink.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -1.5*view.frame.height/3).isActive = true
-        drink.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        drink.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        drink.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        drink.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
-        drink.layer.shadowColor = UIColor.black.cgColor
-        drink.layer.shadowOpacity = 1
-        drink.layer.shadowOffset = CGSize.zero
-        drink.layer.shadowRadius = 10
-        drink.layer.shadowPath = UIBezierPath(rect: drink.bounds).cgPath
+        drinkView.translatesAutoresizingMaskIntoConstraints = false
+        drinkView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -1.5*view.frame.height/3).isActive = true
+        drinkView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        drinkView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        drinkView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        drinkView.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
+        drinkView.layer.shadowColor = UIColor.black.cgColor
+        drinkView.layer.shadowOpacity = 1
+        drinkView.layer.shadowOffset = CGSize.zero
+        drinkView.layer.shadowRadius = 10
+        drinkView.layer.shadowPath = UIBezierPath(rect: drinkView.bounds).cgPath
         let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(switchDrink(_:)))
         swipeGesture.direction = .left
         swipeGesture.cancelsTouchesInView = false
-        drink.addGestureRecognizer(swipeGesture)
+        drinkView.addGestureRecognizer(swipeGesture)
         
         orderButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
-        orderButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
+        orderButton.topAnchor.constraint(equalTo: drinkView.bottomAnchor, constant: MARGIN).isActive = true
         orderButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
         orderButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: MARGIN).isActive = true
         //orderButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         orderButton.addTarget(self, action: #selector(ViewController.click(_:)), for: .touchDown)
         
-        switchButton.topAnchor.constraint(equalTo: drink.bottomAnchor, constant: MARGIN).isActive = true
+        switchButton.topAnchor.constraint(equalTo: drinkView.bottomAnchor, constant: MARGIN).isActive = true
         switchButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
         switchButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
         //switchButton.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -170,20 +177,20 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        drink.card.layer.position = CGPoint(x: (drink.bounds.minX + view.bounds.width/2) - 30, y: drink.bounds.maxY - 50)
+        drinkView.card.layer.position = CGPoint(x: (drinkView.bounds.minX + view.bounds.width/2) - 30, y: drinkView.bounds.maxY - 50)
         setupKeyFrameAnimations()
         setupAnimations()
         drinksModel.switchDrinks()
     }
     
     private func setupKeyFrameAnimations() {
-        let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
-        let backView = drink.drinkImages[drinksModel.backgroundDrinkIndex]
+        let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
+        let backView = drinkView.drinkImages[drinksModel.backgroundDrinkIndex]
         // This one should fix the center
-        let first_x = drink.layer.position.x + 23
-        let first_y = drink.layer.position.y
-        let end_x = drink.layer.position.x + 125
-        let end_y = drink.layer.position.y - 75
+        let first_x = drinkView.layer.position.x + 23
+        let first_y = drinkView.layer.position.y
+        let end_x = drinkView.layer.position.x + 125
+        let end_y = drinkView.layer.position.y - 75
         let swing_x = end_x - 25
         let swing_y = end_y
         let reverseKeyFrameModel = KeyFramePositionModel(start: CGPoint(x: swing_x, y: swing_y), end: CGPoint(x: first_x , y: swing_y + 50), swing: CGPoint(x: first_x, y: first_y))
@@ -196,11 +203,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
 
     private func setupAnimations() {
-        let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
-        let backView = drink.drinkImages[drinksModel.backgroundDrinkIndex]
+        let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
+        let backView = drinkView.drinkImages[drinksModel.backgroundDrinkIndex]
         let animationGroup = CAAnimationGroup()
         let animationGroupReverse = CAAnimationGroup()
-        let endPoint = CGPoint(x: drink.layer.position.x + 25, y: drink.layer.position.y - 25)
+        let endPoint = CGPoint(x: drinkView.layer.position.x + 25, y: drinkView.layer.position.y - 25)
         let rotationDuration: Double = 0.2
         
         let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.4, duration: 0.2)
@@ -240,7 +247,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func rotateDrink (cellAnimation: @escaping () -> Void) {
-        let frontView = drink.drinkImages[drinksModel.currentDrinkIndex]
+        let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
         let aDuration = 0.4
         // Group these
         UIView.animateKeyframes(withDuration: aDuration, delay: 0, options: [.calculationModeCubicPaced],
@@ -353,8 +360,6 @@ extension ViewController {
             keyFrameAnimation.values = [keyFrameModel.start, keyFrameModel.end, keyFrameModel.swing-0.5, keyFrameModel.swing+0.8,keyFrameModel.swing-0.2, keyFrameModel.swing+0.2, keyFrameModel.start]//, keyFrameModel.swing-0.1, keyFrameModel.swing+0.1]
             keyFrameAnimation.keyTimes = [0, 0.3, 0.55, 0.75, 0.85, 0.95, 1]
             keyFrameAnimation.duration = 1.1
-            //keyFrameAnimation.isRemovedOnCompletion = false
-            //keyFrameAnimation.fillMode = kCAFillModeForwards
             keyFrameAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
             return keyFrameAnimation
     }
@@ -471,7 +476,15 @@ extension ViewController {
     }
 }
 
-
+extension ViewController: DrinkViewDelegate {
+    func switchDrink() {
+        
+    }
+    
+    func orderDrink() {
+        
+    }
+}
 
 struct PositionAnimation {
     let from: CGPoint

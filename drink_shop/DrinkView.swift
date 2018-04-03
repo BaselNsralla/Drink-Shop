@@ -1,7 +1,7 @@
 
 import UIKit
 
-class DrinkContainer: UIView {
+class DrinkView: UIView {
     
     let frappeImage : UIImageView = {
         let image = UIImageView(image: #imageLiteral(resourceName: "frappe_straw"))
@@ -19,7 +19,7 @@ class DrinkContainer: UIView {
         image.frame = CGRect(x: 0, y: 0, width: 85, height: 75)
         return image
     }()
-    
+    var delegate: DrinkViewDelegate!
     var drinkImages = [UIImageView]()
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -50,4 +50,5 @@ class DrinkContainer: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
 

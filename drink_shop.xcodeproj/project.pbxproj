@@ -12,12 +12,12 @@
 		FB3DC4C520667A72004548AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB3DC4C320667A72004548AF /* Main.storyboard */; };
 		FB3DC4C720667A72004548AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB3DC4C620667A72004548AF /* Assets.xcassets */; };
 		FB3DC4CA20667A72004548AF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB3DC4C820667A72004548AF /* LaunchScreen.storyboard */; };
-		FB3DC4D220667AA3004548AF /* DrinkContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4D120667AA3004548AF /* DrinkContainer.swift */; };
 		FB3DC4D420670913004548AF /* DrinksModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4D320670913004548AF /* DrinksModel.swift */; };
 		FB3DC4DA206BF281004548AF /* DrinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4D9206BF281004548AF /* DrinkCell.swift */; };
 		FB3DC4DE2071913D004548AF /* DSModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4DD2071913D004548AF /* DSModal.swift */; };
 		FB3DC4E020728230004548AF /* CostText.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4DF2072822F004548AF /* CostText.swift */; };
 		FBFE15FD207294E000753585 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE15FC207294E000753585 /* Colors.swift */; };
+		FBFE15FF2073A2BC00753585 /* DrinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE15FE2073A2BC00753585 /* DrinkView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,12 +28,12 @@
 		FB3DC4C620667A72004548AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FB3DC4C920667A72004548AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FB3DC4CB20667A72004548AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FB3DC4D120667AA3004548AF /* DrinkContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkContainer.swift; sourceTree = "<group>"; };
 		FB3DC4D320670913004548AF /* DrinksModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinksModel.swift; sourceTree = "<group>"; };
 		FB3DC4D9206BF281004548AF /* DrinkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkCell.swift; sourceTree = "<group>"; };
 		FB3DC4DD2071913D004548AF /* DSModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSModal.swift; sourceTree = "<group>"; };
 		FB3DC4DF2072822F004548AF /* CostText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostText.swift; sourceTree = "<group>"; };
 		FBFE15FC207294E000753585 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		FBFE15FE2073A2BC00753585 /* DrinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,7 +68,6 @@
 			children = (
 				FB3DC4BF20667A72004548AF /* AppDelegate.swift */,
 				FB3DC4C120667A72004548AF /* ViewController.swift */,
-				FB3DC4D120667AA3004548AF /* DrinkContainer.swift */,
 				FB3DC4D320670913004548AF /* DrinksModel.swift */,
 				FB3DC4C320667A72004548AF /* Main.storyboard */,
 				FB3DC4C620667A72004548AF /* Assets.xcassets */,
@@ -78,6 +77,7 @@
 				FB3DC4DD2071913D004548AF /* DSModal.swift */,
 				FB3DC4DF2072822F004548AF /* CostText.swift */,
 				FBFE15FC207294E000753585 /* Colors.swift */,
+				FBFE15FE2073A2BC00753585 /* DrinkView.swift */,
 			);
 			path = drink_shop;
 			sourceTree = "<group>";
@@ -159,7 +159,7 @@
 				FB3DC4DE2071913D004548AF /* DSModal.swift in Sources */,
 				FB3DC4D420670913004548AF /* DrinksModel.swift in Sources */,
 				FB3DC4DA206BF281004548AF /* DrinkCell.swift in Sources */,
-				FB3DC4D220667AA3004548AF /* DrinkContainer.swift in Sources */,
+				FBFE15FF2073A2BC00753585 /* DrinkView.swift in Sources */,
 				FB3DC4C220667A72004548AF /* ViewController.swift in Sources */,
 				FB3DC4C020667A72004548AF /* AppDelegate.swift in Sources */,
 			);
