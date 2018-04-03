@@ -34,42 +34,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         .strokeWidth: -3.5,
         .font: UIFont.boldSystemFont(ofSize: 75)
     ]
-    
-    let orderButton : UIButton = {
-        let btn = UIButton(type: .system)
-        btn.backgroundColor = Colors.pink
-        btn.layer.shadowColor = UIColor.black.cgColor
-        btn.layer.shadowOpacity = 1
-        btn.layer.shadowOffset = CGSize.zero
-        btn.layer.shadowRadius = 10
-        btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
-        //btn.layer.cornerRadius = 0.5 * btn.bounds.size.width
-         btn.layer.cornerRadius = 65/2
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        //btn.setTitle("ORDER", for: .normal)
-        //btn.setTitleColor(UIColor.white, for: .normal)
-        //btn.setTitleShadowColor(UIColor.black, for: .normal)
-        //btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
-        return btn
-    }()
-    
-    let switchButton : UIButton = {
-        let btn = UIButton(type: .system)
-        btn.backgroundColor = Colors.purple
-        btn.layer.shadowColor = UIColor.black.cgColor
-        btn.layer.shadowOpacity = 1
-        btn.layer.shadowOffset = CGSize.zero
-        btn.layer.shadowRadius = 10
-        btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
-        //btn.layer.cornerRadius = 0.5 * btn.bounds.size.width
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.layer.cornerRadius = 65/2
-        //btn.setTitle("SWITCH", for: .normal)
-        //btn.setTitleColor(UIColor.white, for: .normal)
-        //btn.setTitleShadowColor(UIColor.black, for: .normal)
-        //btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
-        return btn
-    }()
 
     let fxView : UIVisualEffectView = {
         let view = UIVisualEffectView()
@@ -84,9 +48,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkView.delegate = self
         view.backgroundColor = Colors.blue
         view.addSubview(drinkView)
-        view.addSubview(orderButton)
+        //view.addSubview(orderButton)
         view.addSubview(collectionViewContainer)
-        view.addSubview(switchButton)
+        //view.addSubview(switchButton)
         view.addSubview(fxView)
         setupViews()
         setupList(){}
@@ -109,30 +73,30 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkView.layer.shadowOffset = CGSize.zero
         drinkView.layer.shadowRadius = 10
         drinkView.layer.shadowPath = UIBezierPath(rect: drinkView.bounds).cgPath
-        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(switchDrink(_:)))
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(drinkSwipe(_:)))
         swipeGesture.direction = .left
         swipeGesture.cancelsTouchesInView = false
         drinkView.addGestureRecognizer(swipeGesture)
         
-        orderButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
-        orderButton.topAnchor.constraint(equalTo: drinkView.bottomAnchor, constant: MARGIN).isActive = true
-        orderButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
-        orderButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: MARGIN).isActive = true
-        //orderButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        orderButton.addTarget(self, action: #selector(ViewController.click(_:)), for: .touchDown)
-        
-        switchButton.topAnchor.constraint(equalTo: drinkView.bottomAnchor, constant: MARGIN).isActive = true
-        switchButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
-        switchButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
-        //switchButton.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        switchButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -MARGIN).isActive = true
-        switchButton.addTarget(self, action: #selector(switchDrink(_:)), for: .touchDown)
+//        orderButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
+//        orderButton.topAnchor.constraint(equalTo: drinkView.bottomAnchor, constant: MARGIN).isActive = true
+//        orderButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
+//        orderButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: MARGIN).isActive = true
+//        //orderButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+//        orderButton.addTarget(self, action: #selector(ViewController.click(_:)), for: .touchDown)
+//
+//        switchButton.topAnchor.constraint(equalTo: drinkView.bottomAnchor, constant: MARGIN).isActive = true
+//        switchButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
+//        switchButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
+//        //switchButton.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+//        switchButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -MARGIN).isActive = true
+//        switchButton.addTarget(self, action: #selector(switchDrink(_:)), for: .touchDown)
         
         
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
         collectionViewContainer.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionViewContainer.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        collectionViewContainer.topAnchor.constraint(equalTo: orderButton.bottomAnchor, constant: MARGIN).isActive = true
+        collectionViewContainer.topAnchor.constraint(equalTo: drinkView.bottomAnchor, constant: MARGIN).isActive = true
         collectionViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         collectionViewContainer.backgroundColor = Colors.purple
     }
@@ -150,8 +114,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor, constant: -view.frame.width/2 + 10).isActive = true
         drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
         drinkList.isUserInteractionEnabled = true
+//        drinkList.layer.shadowColor = UIColor.blackColor().CGColor
+//        drinkList.layer.shadowOffset = CGSizeMake(0, 1)
+//        drinkList.layer.shadowOpacity = 1
+//        drinkList.layer.shadowRadius = 1.0
+//        drinkList.clipsToBounds = false
+//        drinkList.layer.masksToBounds = false
         view.setNeedsLayout()
-        //view.layoutSubviews()
         clojure()
     }
     
@@ -275,13 +244,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func animatePrice() {
         //let animationModel = ScaleAnimation(from: 1, to: 1.4, duration: 0.65)
         //let animation = coreAnimationScaleSpring(animationModel)
-        let animationModel = KeyFrameScaleSpringModel(start: 1, end: 1.3, swing: 1)
+        let animationModel = KeyFrameScaleSpringModel(start: 1, end: 1.4, swing: 1)
         let animation = coreAnimationKeyFrameScaleSpring(animationModel)
         if let textViewObject = textView {
             CATransaction.begin()
             textViewObject.layer.add(animation, forKey: "scaleText")
-            textViewObject.layer.contentsScale = animationModel.swing
+            textViewObject.layer.contentsScale = animationModel.end
             CATransaction.commit()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.142, execute: {self.updatePriceFromModel()})
             print("LABEL IS ANIMATING")
             
 //            UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.curveEaseOut], animations: {
@@ -357,9 +327,18 @@ extension ViewController {
     private func coreAnimationKeyFrameScaleSpring(_ keyFrameModel: KeyFrameScaleSpringModel)
         -> CAKeyframeAnimation {
             let keyFrameAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
-            keyFrameAnimation.values = [keyFrameModel.start, keyFrameModel.end, keyFrameModel.swing-0.5, keyFrameModel.swing+0.8,keyFrameModel.swing-0.2, keyFrameModel.swing+0.2, keyFrameModel.start]//, keyFrameModel.swing-0.1, keyFrameModel.swing+0.1]
-            keyFrameAnimation.keyTimes = [0, 0.3, 0.55, 0.75, 0.85, 0.95, 1]
-            keyFrameAnimation.duration = 1.1
+            keyFrameAnimation.values = [keyFrameModel.start, keyFrameModel.end, keyFrameModel.swing, keyFrameModel.swing+0.2,keyFrameModel.swing - 0.1, keyFrameModel.swing+0.1, keyFrameModel.start]
+//            var times: [NSNumber] = [0, 0.3, 0.55, 0.75, 0.85, 0.95, 1].map{return NSNumber(value: (Double($0)/0.1)*1)}
+//            keyFrameAnimation.keyTimes = [0, 0.3, 0.55, 0.75, 0.85, 0.95, 1]
+//            keyFrameAnimation.duration = 1.1
+            var bites = [NSNumber]()
+            let bite: Double = 1/7
+            for i in 0..<7 {
+                bites.append(NSNumber(value: bite*Double(i)))
+            }
+            print(bites)
+            keyFrameAnimation.keyTimes = bites
+            keyFrameAnimation.duration = 1.2
             keyFrameAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
             return keyFrameAnimation
     }
@@ -388,29 +367,6 @@ extension ViewController {
         //fxView.frame = view.bounds
         //modalView.showModal(at: sender.frame)
     }
-    
-    @objc
-    func click(_ sender: AnyObject?) {
-        drinksModel.animatedLast = false
-        drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
-        drinksModel.buy(drink: drinksModel.currentDrink)
-        animatePrice()
-        updatePriceFromModel()
-        rotateDrink(){
-            self.drinkList.reloadData()
-            let ip = IndexPath(row: 0, section: self.drinksModel.drinksListItem.count-1)
-            self.drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
-        }
-    }
-    
-    @objc
-    func switchDrink(_ sender: AnyObject?) {
-        print(drinksModel.backgroundDrinkIndex, drinksModel.currentDrinkIndex)
-        setupKeyFrameAnimations()
-        setupAnimations()
-        drinksModel.switchDrinks()
-    }
-    
 }
 
 extension ViewController {
@@ -478,11 +434,27 @@ extension ViewController {
 
 extension ViewController: DrinkViewDelegate {
     func switchDrink() {
-        
+        print(drinksModel.backgroundDrinkIndex, drinksModel.currentDrinkIndex)
+        setupKeyFrameAnimations()
+        setupAnimations()
+        drinksModel.switchDrinks()
     }
     
     func orderDrink() {
-        
+        drinksModel.animatedLast = false
+        drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
+        drinksModel.buy(drink: drinksModel.currentDrink)
+        animatePrice()
+        rotateDrink(){
+            self.drinkList.reloadData()
+            let ip = IndexPath(row: 0, section: self.drinksModel.drinksListItem.count-1)
+            self.drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
+        }
+    }
+    
+    @objc
+    func drinkSwipe(_: Any?) {
+        switchDrink()
     }
 }
 

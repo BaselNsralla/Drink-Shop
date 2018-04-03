@@ -12,7 +12,7 @@ struct DrinksModel {
     let drinksCount = 10
     var drinksListItem = [String]()
     var currentDrink: drinkPick = .frappe
-    var currency = "$"
+    var currency = "€"
     var cost:String
     enum drinkPick: String {
         case frappe = "frappe_straw"
@@ -35,8 +35,9 @@ struct DrinksModel {
     init() {
         cost = "0" + self.currency
     }
+    
     mutating func buy(drink: drinkPick) {
-        let sequence = cost.split(separator: "$")
+        let sequence = cost.split(separator: Character(currency))
         let oldCost = sequence[sequence.startIndex]
         let newCost = Int(oldCost)! + prices[drink]!
         cost = String(newCost) + currency
