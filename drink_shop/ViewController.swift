@@ -152,16 +152,20 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         //var font = UIFont.preferredFont(forTextStyle: .headline)
         let costText = NSAttributedString(string: drinksModel.cost, attributes: localAttributes)
         textView = UILabel()
+        //textView?.backgroundColor = Colors.blue
         textView?.textAlignment = .center
+        textView?.adjustsFontSizeToFitWidth = true
+        textView?.contentMode = UIViewContentMode.center
         if let textViewObject = textView {
             textViewObject.attributedText = costText
             collectionViewContainer.addSubview(textViewObject)
             textViewObject.translatesAutoresizingMaskIntoConstraints = false
             let left = textViewObject.leftAnchor.constraint(equalTo: drinkList.rightAnchor)
             let right = textViewObject.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor)
-            let top = textViewObject.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor)
-            let bottom = textViewObject.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor)
-            NSLayoutConstraint.activate([left, right, top, bottom])
+            //let top = textViewObject.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor)
+            //let bottom = textViewObject.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor)
+            let center = textViewObject.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor)
+            NSLayoutConstraint.activate([left, right, center])//top, bottom])
         }
     }
     
@@ -260,6 +264,28 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let scaleAnimation = coreAnimationScale(startingPoint: animationModel.from, endingPoint: animationModel.to, animationDuration: animationModel.duration)
         return scaleAnimation
     }
+    
+    func animatePrice() {
+        let animationModel = ScaleAnimation(from: 1, to: 1.4, duration: 0.3)
+        let animation = coreAnimationScaleSpring(animationModel)
+        if let textViewObject = textView {
+//            CATransaction.begin()
+//            textViewObject.layer.add(animation, forKey: "scaleText")
+//            textViewObject.layer.contentsScale = animationModel.to
+//            CATransaction.commit()
+            print("LABEL IS ANIMATING")
+            
+            UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.curveEaseOut], animations: {
+                textViewObject.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+            }, completion: { (_) in
+                UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: [.curveEaseIn], animations: {
+                    textViewObject.transform = CGAffineTransform(scaleX: 1, y: 1)
+                }, completion: { (_) in
+
+                })
+            })
+        }
+    }
 }
 
 
@@ -305,6 +331,18 @@ extension ViewController {
             return springAnimation
     }
     
+    private func coreAnimationScaleSpring(_ springPositionModel: ScaleAnimation)
+        -> CASpringAnimation {
+            let springAnimation = CASpringAnimation(keyPath: "transfrom.scale")
+            springAnimation.fromValue = springPositionModel.from
+            springAnimation.toValue = springPositionModel.to
+            springAnimation.duration = springPositionModel.duration
+            springAnimation.damping = 8
+            springAnimation.isRemovedOnCompletion = true
+            //springAnimation.fillMode = kCAFillModeForwards
+            return springAnimation
+    }
+    
     private func makeKeyFramAnimation (_ animationModel: KeyFrameModel) -> CAKeyframeAnimation {
         let keyFrameAnimation = CAKeyframeAnimation(keyPath: "position")
         keyFrameAnimation.values = [animationModel.start, animationModel.end, animationModel.swing]
@@ -334,7 +372,9 @@ extension ViewController {
         drinksModel.animatedLast = false
         drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
         drinksModel.buy(drink: drinksModel.currentDrink)
+        
         updatePriceFromModel()
+        animatePrice()
         rotateDrink(){
             self.drinkList.reloadData()
             let ip = IndexPath(row: 0, section: self.drinksModel.drinksListItem.count-1)
