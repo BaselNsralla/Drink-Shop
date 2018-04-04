@@ -131,7 +131,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         //textView?.backgroundColor = Colors.blue
         textView?.textAlignment = .center
         textView?.adjustsFontSizeToFitWidth = true
-        textView?.contentMode = UIViewContentMode.center
+        //textView?.font = localAttributes?[.font] as! UIFont
+        //textView?.contentMode = UIViewContentMode.center
         if let textViewObject = textView {
             textViewObject.attributedText = costText
             collectionViewContainer.addSubview(textViewObject)
@@ -244,14 +245,19 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func animatePrice() {
         //let animationModel = ScaleAnimation(from: 1, to: 1.4, duration: 0.65)
         //let animation = coreAnimationScaleSpring(animationModel)
-        let animationModel = KeyFrameScaleSpringModel(start: 1, end: 1.4, swing: 1)
+        let animationModel = KeyFrameScaleSpringModel(start: 1, end: 0.05, swing: 1)
         let animation = coreAnimationKeyFrameScaleSpring(animationModel)
         if let textViewObject = textView {
             CATransaction.begin()
+
+            CATransaction.setCompletionBlock({
+                //self.updatePriceFromModel()
+                self.textView?.contentScaleFactor = 1
+            })
             textViewObject.layer.add(animation, forKey: "scaleText")
-            textViewObject.layer.contentsScale = animationModel.end
+            textViewObject.contentScaleFactor = animationModel.start
             CATransaction.commit()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.142, execute: {self.updatePriceFromModel()})
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {self.updatePriceFromModel()})
             print("LABEL IS ANIMATING")
             
 //            UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.curveEaseOut], animations: {
@@ -327,7 +333,7 @@ extension ViewController {
     private func coreAnimationKeyFrameScaleSpring(_ keyFrameModel: KeyFrameScaleSpringModel)
         -> CAKeyframeAnimation {
             let keyFrameAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
-            keyFrameAnimation.values = [keyFrameModel.start, keyFrameModel.end, keyFrameModel.swing, keyFrameModel.swing+0.2,keyFrameModel.swing - 0.1, keyFrameModel.swing+0.1, keyFrameModel.start]
+            keyFrameAnimation.values = [keyFrameModel.start, keyFrameModel.end, keyFrameModel.swing, keyFrameModel.swing+0.1,keyFrameModel.swing - 0.1, keyFrameModel.swing+0.05, keyFrameModel.start]
 //            var times: [NSNumber] = [0, 0.3, 0.55, 0.75, 0.85, 0.95, 1].map{return NSNumber(value: (Double($0)/0.1)*1)}
 //            keyFrameAnimation.keyTimes = [0, 0.3, 0.55, 0.75, 0.85, 0.95, 1]
 //            keyFrameAnimation.duration = 1.1
@@ -336,10 +342,12 @@ extension ViewController {
             for i in 0..<7 {
                 bites.append(NSNumber(value: bite*Double(i)))
             }
+            bites.removeLast()
+            bites.append(NSNumber(value: 1))
             print(bites)
             keyFrameAnimation.keyTimes = bites
-            keyFrameAnimation.duration = 1.2
-            keyFrameAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+            keyFrameAnimation.duration = 1.5
+            keyFrameAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
             return keyFrameAnimation
     }
     
@@ -423,6 +431,7 @@ extension ViewController {
         if let textViewObject = textView {
             let text = drinksModel.cost
             textViewObject.attributedText = NSMutableAttributedString(string: text, attributes: localAttributes)
+            //textViewObject.setNeedsDisplay()
             //textViewObject.text = textViewObject.attributedText!.string
             //textViewObject.adjustsFontSizeToFitWidth = true
 //            textViewObject.text = drinksModel.cost
