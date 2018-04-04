@@ -156,16 +156,16 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let endPoint = CGPoint(x: drinkView.layer.position.x + 25, y: drinkView.layer.position.y - 25)
         let rotationDuration: Double = 0.2
         
-        let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.4, duration: 0.2)
+        let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.4, duration: 0.2, fillMode: kCAFillModeForwards)
         animationGroup.delegate = self
-        animationGroup.animations = [animateDrinkScale(scaleAnimationModel)]
+        animationGroup.animations = [ animationsFactory.coreAnimationScale(animationModel: scaleAnimationModel)]
         animationGroup.duration = 0.2
         animationGroup.fillMode = kCAFillModeForwards
         animationGroup.isRemovedOnCompletion = false
         
-        let scaleAnimationModelReverse = ScaleAnimation(from: 0.4, to: 1, duration: 0.2)
+        let scaleAnimationModelReverse = ScaleAnimation(from: 0.4, to: 1, duration: 0.2, fillMode: kCAFillModeForwards)
         animationGroupReverse.delegate = self
-        animationGroupReverse.animations = [animateDrinkScale(scaleAnimationModelReverse)]
+        animationGroupReverse.animations = [ animationsFactory.coreAnimationScale(animationModel: scaleAnimationModelReverse)]
         animationGroupReverse.duration = 0.2
         animationGroupReverse.fillMode = kCAFillModeForwards
         animationGroupReverse.isRemovedOnCompletion = false
@@ -198,16 +198,15 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
          let endPoint = CGPoint(x: drinkView.layer.position.x + 25, y: drinkView.layer.position.y - 25)
         
         let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
-        let aDuration = 0.3
+        let aDuration = 0.28
         let fullRotation: Double = -1/2/2/2
-        let animationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 70), duration: aDuration)
-        
+        let positionAnimationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 40), duration: aDuration)
+        let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.8, duration: aDuration, fillMode: kCAFillModeForwards)
         CATransaction.begin()
-        CATransaction.setCompletionBlock {
-             //cellAnimation()
-        }
+        CATransaction.setCompletionBlock {}
         let animationGroup = CAAnimationGroup()
-        animationGroup.animations = [animationsFactory.coreAnimationPosition(animationModel: animationModel), animationsFactory.coreAnimationRotation(piRatio: fullRotation, animationDuration: aDuration)]
+        animationGroup.animations = [animationsFactory.coreAnimationPosition(animationModel: positionAnimationModel), animationsFactory.coreAnimationRotation(piRatio: fullRotation, animationDuration: aDuration),
+            animationsFactory.coreAnimationScale(animationModel: scaleAnimationModel)]
         animationGroup.duration = aDuration
         animationGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         animationGroup.autoreverses = true
@@ -216,40 +215,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         frontView.layer.add(animationGroup, forKey: "pickAnimation")
         frontView.layer.position = endPoint
        CATransaction.commit()
-        // Group these
-//        UIView.animateKeyframes(withDuration: aDuration, delay: 0, options: [.calculationModeCubicPaced],
-//            animations: {
-//            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2, animations: {
-//                frontView.transform = CGAffineTransform(translationX: -5, y:  -25)
-//            })
-//            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.2, animations: {
-//               frontView.transform = CGAffineTransform(rotationAngle: 1/3 * fullRotation)
-//            })
-//            UIView.addKeyframe(withRelativeStartTime: 0.4, relativeDuration: 0.2, animations: {
-//                frontView.transform = CGAffineTransform(translationX: -7, y:  -40)
-//            })
-//            UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.2, animations: {
-//                frontView.transform = CGAffineTransform(rotationAngle: 2/3 * fullRotation)
-//            })
-//            UIView.addKeyframe(withRelativeStartTime: 0.8, relativeDuration: 0.2, animations: {
-//                frontView.transform = CGAffineTransform(translationX: -10, y:  -50)
-//            })
-//            UIView.addKeyframe(withRelativeStartTime: 0.95, relativeDuration: 0.2, animations: {
-//                frontView.transform = CGAffineTransform(rotationAngle: fullRotation)
-//            })
-//
-//        }, completion: { (_: Bool) in
-//            cellAnimation()
-////            UIView.animate(withDuration: 0.2, animations: {
-////                frontView.transform = CGAffineTransform(rotationAngle: CGFloat(0))
-////            })
-//        })
     }
-    
-    func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
-        let scaleAnimation = animationsFactory.coreAnimationScale(startingPoint: animationModel.from, endingPoint: animationModel.to, animationDuration: animationModel.duration)
-        return scaleAnimation
-    }
+ 
     
     func animatePrice(cellAnimation: @escaping () -> Void) {
         let animationModel = KeyFrameScaleSpringModel(start: 1, end: 0.05, swing: 1)

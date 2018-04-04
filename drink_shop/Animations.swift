@@ -30,14 +30,14 @@ extension AnimationsFactory {
         return basicAnimation
     }
     
-     func coreAnimationScale(startingPoint: CGFloat, endingPoint: CGFloat, animationDuration: Double)
+     func coreAnimationScale(animationModel: ScaleAnimation)
         -> CABasicAnimation {
             let basicAnimation = CABasicAnimation(keyPath: "transform.scale")
-            basicAnimation.fromValue = startingPoint
-            basicAnimation.toValue = endingPoint
-            basicAnimation.duration = animationDuration
+            basicAnimation.fromValue = animationModel.from
+            basicAnimation.toValue = animationModel.to
+            basicAnimation.duration = animationModel.duration
             basicAnimation.isRemovedOnCompletion = false
-            basicAnimation.fillMode = kCAFillModeForwards
+            basicAnimation.fillMode = animationModel.fillMode
             return basicAnimation
     }
     
@@ -161,6 +161,7 @@ struct ScaleAnimation {
     let from: CGFloat
     let to: CGFloat
     let duration: Double
+    let fillMode: String
 }
 
 struct KeyFramePositionModel {
