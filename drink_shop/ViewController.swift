@@ -20,6 +20,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var drinksModel = DrinksModel()
     let drinkView = DrinkView()
     let modalView = DSModal()
+    let animationsFactory = AnimationsFactory()
     var drinkList: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -78,21 +79,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         swipeGesture.cancelsTouchesInView = false
         drinkView.addGestureRecognizer(swipeGesture)
         
-//        orderButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
-//        orderButton.topAnchor.constraint(equalTo: drinkView.bottomAnchor, constant: MARGIN).isActive = true
-//        orderButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
-//        orderButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: MARGIN).isActive = true
-//        //orderButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-//        orderButton.addTarget(self, action: #selector(ViewController.click(_:)), for: .touchDown)
-//
-//        switchButton.topAnchor.constraint(equalTo: drinkView.bottomAnchor, constant: MARGIN).isActive = true
-//        switchButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
-//        switchButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
-//        //switchButton.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-//        switchButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -MARGIN).isActive = true
-//        switchButton.addTarget(self, action: #selector(switchDrink(_:)), for: .touchDown)
-        
-        
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
         collectionViewContainer.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionViewContainer.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -108,18 +94,19 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.translatesAutoresizingMaskIntoConstraints = false
         drinkList.dataSource = self
         drinkList.delegate = self
-        drinkList.backgroundColor = Colors.purple
+        drinkList.backgroundColor = Colors.blue
+        //drinkList.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
         drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
         drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
         drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor, constant: -view.frame.width/2 + 10).isActive = true
         drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
         drinkList.isUserInteractionEnabled = true
-//        drinkList.layer.shadowColor = UIColor.blackColor().CGColor
-//        drinkList.layer.shadowOffset = CGSizeMake(0, 1)
-//        drinkList.layer.shadowOpacity = 1
-//        drinkList.layer.shadowRadius = 1.0
-//        drinkList.clipsToBounds = false
-//        drinkList.layer.masksToBounds = false
+        //        drinkList.layer.shadowColor = UIColor.blackColor().CGColor
+        //        drinkList.layer.shadowOffset = CGSizeMake(0, 1)
+        //        drinkList.layer.shadowOpacity = 1
+        //        drinkList.layer.shadowRadius = 1.0
+        //        drinkList.clipsToBounds = false
+        //        drinkList.layer.masksToBounds = false
         view.setNeedsLayout()
         clojure()
     }
@@ -165,8 +152,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let swing_y = end_y
         let reverseKeyFrameModel = KeyFramePositionModel(start: CGPoint(x: swing_x, y: swing_y), end: CGPoint(x: first_x , y: swing_y + 50), swing: CGPoint(x: first_x, y: first_y))
         let keyFrameModel = KeyFramePositionModel(start: CGPoint(x: first_x, y: first_y), end: CGPoint(x: end_x, y: end_y), swing: CGPoint(x: swing_x, y: swing_y))
-        let frontToBack = makeKeyFramAnimation(keyFrameModel)
-        let backToFront = makeKeyFramAnimation(reverseKeyFrameModel)
+        let frontToBack = animationsFactory.makeKeyFramAnimation(keyFrameModel)
+        let backToFront = animationsFactory.makeKeyFramAnimation(reverseKeyFrameModel)
         backView.layer.add(backToFront, forKey: "backToFront")
         frontView.layer.add(frontToBack, forKey: "frontToBack")
     }
@@ -238,136 +225,26 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
-        let scaleAnimation = coreAnimationScale(startingPoint: animationModel.from, endingPoint: animationModel.to, animationDuration: animationModel.duration)
+        let scaleAnimation = animationsFactory.coreAnimationScale(startingPoint: animationModel.from, endingPoint: animationModel.to, animationDuration: animationModel.duration)
         return scaleAnimation
     }
     
     func animatePrice() {
-        //let animationModel = ScaleAnimation(from: 1, to: 1.4, duration: 0.65)
-        //let animation = coreAnimationScaleSpring(animationModel)
         let animationModel = KeyFrameScaleSpringModel(start: 1, end: 0.05, swing: 1)
-        let animation = coreAnimationKeyFrameScaleSpring(animationModel)
+        let animation = animationsFactory.coreAnimationKeyFrameScaleSpring(animationModel)
         if let textViewObject = textView {
             CATransaction.begin()
-
             CATransaction.setCompletionBlock({
-                //self.updatePriceFromModel()
                 self.textView?.contentScaleFactor = 1
             })
             textViewObject.layer.add(animation, forKey: "scaleText")
             textViewObject.contentScaleFactor = animationModel.start
             CATransaction.commit()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {self.updatePriceFromModel()})
-            print("LABEL IS ANIMATING")
-            
-//            UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.curveEaseOut], animations: {
-//                textViewObject.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-//            }, completion: { (_) in
-//                UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: [.curveEaseIn], animations: {
-//                    textViewObject.transform = CGAffineTransform(scaleX: 1, y: 1)
-//                }, completion: { (_) in
-//
-//                })
-//            })
             
         }
     }
 }
-
-
-extension ViewController {
-    private func coreAnimationPosition(animationModel: PositionAnimation) -> CABasicAnimation {
-        let basicAnimation = CABasicAnimation(keyPath: "position")
-        basicAnimation.fromValue = NSValue(cgPoint: animationModel.from)
-        basicAnimation.toValue = NSValue(cgPoint: animationModel.to)
-        basicAnimation.duration = animationModel.duration
-        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
-        return basicAnimation
-    }
-    
-    private func coreAnimationRotation(startingPoint: CGPoint, endingPoint: CGPoint, animationDuration : Double) -> CABasicAnimation {
-        let basicAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
-        basicAnimation.fromValue = NSValue(cgPoint: startingPoint)
-        basicAnimation.toValue = NSValue(cgPoint: endingPoint)
-        basicAnimation.duration = animationDuration
-        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
-        return basicAnimation
-    }
-    
-    private func coreAnimationScale(startingPoint: CGFloat, endingPoint: CGFloat, animationDuration: Double)
-        -> CABasicAnimation {
-            let basicAnimation = CABasicAnimation(keyPath: "transform.scale")
-            basicAnimation.fromValue = startingPoint
-            basicAnimation.toValue = endingPoint
-            basicAnimation.duration = animationDuration
-            basicAnimation.isRemovedOnCompletion = false
-            basicAnimation.fillMode = kCAFillModeForwards
-            return basicAnimation
-    }
-    
-    private func coreAnimationSpring(_ springPositionModel: PositionAnimation)
-        -> CASpringAnimation {
-            let springAnimation = CASpringAnimation(keyPath: "position")
-            springAnimation.fromValue = springPositionModel.from
-            springAnimation.toValue = springPositionModel.to
-            springAnimation.duration = springPositionModel.duration
-            springAnimation.damping = 8
-            springAnimation.isRemovedOnCompletion = true
-            //springAnimation.fillMode = kCAFillModeForwards
-            return springAnimation
-    }
-    
-    private func coreAnimationScaleSpring(_ springPositionModel: ScaleAnimation)
-        -> CASpringAnimation {
-            let springAnimation = CASpringAnimation(keyPath: "transform.scale")
-            springAnimation.fromValue = springPositionModel.from
-            springAnimation.toValue = springPositionModel.to
-            springAnimation.duration = springPositionModel.duration
-            springAnimation.damping = 0.1
-            springAnimation.initialVelocity = 1
-            //springAnimation.isRemovedOnCompletion = true
-            //springAnimation.fillMode = kCAFillModeForwards
-            return springAnimation
-    }
-    
-    private func coreAnimationKeyFrameScaleSpring(_ keyFrameModel: KeyFrameScaleSpringModel)
-        -> CAKeyframeAnimation {
-            let keyFrameAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
-            keyFrameAnimation.values = [keyFrameModel.start, keyFrameModel.end, keyFrameModel.swing, keyFrameModel.swing+0.1,keyFrameModel.swing - 0.1, keyFrameModel.swing+0.05, keyFrameModel.start]
-//            var times: [NSNumber] = [0, 0.3, 0.55, 0.75, 0.85, 0.95, 1].map{return NSNumber(value: (Double($0)/0.1)*1)}
-//            keyFrameAnimation.keyTimes = [0, 0.3, 0.55, 0.75, 0.85, 0.95, 1]
-//            keyFrameAnimation.duration = 1.1
-            var bites = [NSNumber]()
-            let bite: Double = 1/7
-            for i in 0..<7 {
-                bites.append(NSNumber(value: bite*Double(i)))
-            }
-            bites.removeLast()
-            bites.append(NSNumber(value: 1))
-            print(bites)
-            keyFrameAnimation.keyTimes = bites
-            keyFrameAnimation.duration = 1.5
-            keyFrameAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-            return keyFrameAnimation
-    }
-    
-    
-    private func makeKeyFramAnimation (_ animationModel: KeyFramePositionModel) -> CAKeyframeAnimation {
-        let keyFrameAnimation = CAKeyframeAnimation(keyPath: "position")
-        keyFrameAnimation.values = [animationModel.start, animationModel.end, animationModel.swing]
-        keyFrameAnimation.keyTimes = [0.25, 0.7, 1]
-        keyFrameAnimation.duration = 0.5
-        keyFrameAnimation.isRemovedOnCompletion = false
-        keyFrameAnimation.fillMode = kCAFillModeForwards
-        keyFrameAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
-        return keyFrameAnimation
-    }
-    
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        print("Finished scaling")
-    }
-}
-
 
 extension ViewController {
     
@@ -387,7 +264,7 @@ extension ViewController {
         print(drinksModel.drinksListItem[id] )
         let image = UIImage(named: drinksModel.drinksListItem[id]+"_"+"list")
         cell.image.image = image
-        cell.backgroundColor =  Colors.purple
+        cell.backgroundColor = UIColor(white: 1, alpha: 0)
         return cell
     }
     
@@ -410,7 +287,7 @@ extension ViewController {
             }
             let from = CGPoint(x: cell.layer.position.x, y: -10)
             let to = CGPoint(x: cell.layer.position.x, y: drinkCell.layer.position.y )
-            let springAnimation = self.coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.2))
+            let springAnimation = self.animationsFactory.coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.2))
             cell.layer.add(springAnimation, forKey: "springListCell")
         }
     }
@@ -431,17 +308,12 @@ extension ViewController {
         if let textViewObject = textView {
             let text = drinksModel.cost
             textViewObject.attributedText = NSMutableAttributedString(string: text, attributes: localAttributes)
-            //textViewObject.setNeedsDisplay()
-            //textViewObject.text = textViewObject.attributedText!.string
-            //textViewObject.adjustsFontSizeToFitWidth = true
-//            textViewObject.text = drinksModel.cost
-//            textViewObject.font = UIFont.boldSystemFont(ofSize: 30)
-//            textViewObject.textColor = Colors.pink
         }
     }
 }
 
 extension ViewController: DrinkViewDelegate {
+    
     func switchDrink() {
         print(drinksModel.backgroundDrinkIndex, drinksModel.currentDrinkIndex)
         setupKeyFrameAnimations()
@@ -465,31 +337,12 @@ extension ViewController: DrinkViewDelegate {
     func drinkSwipe(_: Any?) {
         switchDrink()
     }
+    
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        print("Finished scaling")
+    }
 }
 
-struct PositionAnimation {
-    let from: CGPoint
-    let to: CGPoint
-    let duration: Double
-}
-
-struct ScaleAnimation {
-    let from: CGFloat
-    let to: CGFloat
-    let duration: Double
-}
-
-struct KeyFramePositionModel {
-    let start: CGPoint
-    let end: CGPoint
-    let swing: CGPoint
-}
-
-struct KeyFrameScaleSpringModel {
-    let start: CGFloat
-    let end: CGFloat
-    let swing: CGFloat
-}
 
 
 

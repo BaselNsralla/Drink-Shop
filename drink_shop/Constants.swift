@@ -10,4 +10,11 @@ import Foundation
 struct Constants {
     static let buttonWidth = 65
     static let buttonHeight = 65
+    enum JumpingVarians {
+        case small
+        case big
+        case bigThenSmall
+        case smallThenBig
+    }
 }
+

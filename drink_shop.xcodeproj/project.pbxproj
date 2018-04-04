@@ -19,6 +19,7 @@
 		FBFE15FD207294E000753585 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE15FC207294E000753585 /* Colors.swift */; };
 		FBFE15FF2073A2BC00753585 /* DrinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE15FE2073A2BC00753585 /* DrinkView.swift */; };
 		FBFE16012073A92A00753585 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE16002073A92A00753585 /* Constants.swift */; };
+		FBFE16032074CF1800753585 /* Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE16022074CF1800753585 /* Animations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		FBFE15FC207294E000753585 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		FBFE15FE2073A2BC00753585 /* DrinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkView.swift; sourceTree = "<group>"; };
 		FBFE16002073A92A00753585 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		FBFE16022074CF1800753585 /* Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 			children = (
 				FB3DC4BF20667A72004548AF /* AppDelegate.swift */,
 				FB3DC4C120667A72004548AF /* ViewController.swift */,
+				FBFE16022074CF1800753585 /* Animations.swift */,
 				FB3DC4D320670913004548AF /* DrinksModel.swift */,
 				FB3DC4C320667A72004548AF /* Main.storyboard */,
 				FB3DC4C620667A72004548AF /* Assets.xcassets */,
@@ -163,6 +166,7 @@
 				FB3DC4D420670913004548AF /* DrinksModel.swift in Sources */,
 				FB3DC4DA206BF281004548AF /* DrinkCell.swift in Sources */,
 				FBFE15FF2073A2BC00753585 /* DrinkView.swift in Sources */,
+				FBFE16032074CF1800753585 /* Animations.swift in Sources */,
 				FB3DC4C220667A72004548AF /* ViewController.swift in Sources */,
 				FB3DC4C020667A72004548AF /* AppDelegate.swift in Sources */,
 				FBFE16012073A92A00753585 /* Constants.swift in Sources */,
