@@ -47,7 +47,7 @@ extension AnimationsFactory {
             springAnimation.fromValue = springPositionModel.from
             springAnimation.toValue = springPositionModel.to
             springAnimation.duration = springPositionModel.duration
-            springAnimation.damping = 8
+            springAnimation.damping = 6
             springAnimation.isRemovedOnCompletion = true
             //springAnimation.fillMode = kCAFillModeForwards
             return springAnimation

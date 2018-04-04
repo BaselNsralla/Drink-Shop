@@ -133,10 +133,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
         let backView = drinkView.drinkImages[drinksModel.backgroundDrinkIndex]
         // This one should fix the center
-        let first_x = drinkView.layer.position.x + Constants.centerOffset
-        let first_y = drinkView.layer.position.y
-        let end_x = drinkView.layer.position.x + 125
-        let end_y = drinkView.layer.position.y - 75
+        let first_x = frontView.layer.position.x
+        let first_y = frontView.layer.position.y
+        let end_x = frontView.layer.position.x + 125
+        let end_y = frontView.layer.position.y - 75
         let swing_x = end_x - 25
         let swing_y = end_y
         let reverseKeyFrameModel = KeyFramePositionModel(start: CGPoint(x: swing_x, y: swing_y), end: CGPoint(x: first_x , y: swing_y + 50), swing: CGPoint(x: first_x, y: first_y))
@@ -178,8 +178,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
         frontView.layer.contentsScale = scaleAnimationModel.to
         backView.layer.contentsScale = scaleAnimationModelReverse.to
-        frontView.layer.position = endPoint
-        backView.layer.position = endPoint
+        frontView.layer.position = frontView.layer.position
+        backView.layer.position = frontView.layer.position
 
         UIView.animate(withDuration: rotationDuration,delay:0 ,options: UIViewAnimationOptions.curveEaseIn, animations: {
             backView.transform = CGAffineTransform(rotationAngle: CGFloat(Float.pi/2/4))
@@ -193,11 +193,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func rotateDrink () {
-        let first_x = drinkView.layer.position.x + Constants.centerOffset
-        let first_y = drinkView.layer.position.y
-         let endPoint = CGPoint(x: drinkView.layer.position.x + 25, y: drinkView.layer.position.y - 25)
-        
         let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
+
+        let first_x = frontView.layer.position.x
+        let first_y = frontView.layer.position.y
+         let endPoint = CGPoint(x: frontView.layer.position.x, y: frontView.layer.position.y)
+        
         let aDuration = 0.28
         let fullRotation: Double = -1/2/2/2
         let positionAnimationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 40), duration: aDuration)
