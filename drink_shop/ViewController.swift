@@ -199,8 +199,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
         let aDuration = 0.3
-        let fullRotation: Double = -1/2/2/1.6
-        let animationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 50), duration: aDuration)
+        let fullRotation: Double = -1/2/2/2
+        let animationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 70), duration: aDuration)
         
         CATransaction.begin()
         CATransaction.setCompletionBlock {

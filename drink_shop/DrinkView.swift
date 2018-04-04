@@ -91,8 +91,8 @@ class DrinkView: UIView {
         var constraints = [NSLayoutConstraint]()
         for i in 0..<drinkImages.count {
             drinkImages[i].translatesAutoresizingMaskIntoConstraints = false
-            let right = drinkImages[i].rightAnchor.constraint(equalTo: rightAnchor, constant: -50)
-            let left = drinkImages[i].leftAnchor.constraint(equalTo: leftAnchor, constant: 50)
+            let right = drinkImages[i].rightAnchor.constraint(equalTo: rightAnchor, constant: -40)
+            let left = drinkImages[i].leftAnchor.constraint(equalTo: leftAnchor, constant: 40)
             let top = drinkImages[i].topAnchor.constraint(equalTo: topAnchor, constant: 50)
             let bottom = drinkImages[i].bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50)
             constraints.append(contentsOf: [top, bottom, left, right])
