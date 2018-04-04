@@ -12,6 +12,7 @@ struct Constants {
     static let buttonWidth = 65
     static let buttonHeight = 65
     static let cellSize = CGSize(width: 130 , height: 200)
+    static let centerOffset: CGFloat = 23
     enum JumpingVarians {
         case small
         case big

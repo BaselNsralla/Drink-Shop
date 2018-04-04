@@ -21,10 +21,10 @@ extension AnimationsFactory {
         return basicAnimation
     }
     
-     func coreAnimationRotation(startingPoint: CGPoint, endingPoint: CGPoint, animationDuration : Double) -> CABasicAnimation {
-        let basicAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
-        basicAnimation.fromValue = NSValue(cgPoint: startingPoint)
-        basicAnimation.toValue = NSValue(cgPoint: endingPoint)
+     func coreAnimationRotation(piRatio: Double, animationDuration : Double) -> CABasicAnimation {
+        let basicAnimation = CABasicAnimation(keyPath: "transform.rotation")
+        basicAnimation.fromValue = 0.0
+        basicAnimation.toValue = Double.pi * piRatio
         basicAnimation.duration = animationDuration
         basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
         return basicAnimation
@@ -142,6 +142,7 @@ extension AnimationsFactory {
         keyFrameAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
         return keyFrameAnimation
     }
+
 }
 
 

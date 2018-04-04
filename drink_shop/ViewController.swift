@@ -97,39 +97,26 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.dataSource = self
         drinkList.delegate = self
         drinkList.backgroundColor = Colors.purple
-        //drinkList.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
         drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
         drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
         drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor, constant: -view.frame.width/2 + 10).isActive = true
         drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
         drinkList.isUserInteractionEnabled = true
-        //        drinkList.layer.shadowColor = UIColor.blackColor().CGColor
-        //        drinkList.layer.shadowOffset = CGSizeMake(0, 1)
-        //        drinkList.layer.shadowOpacity = 1
-        //        drinkList.layer.shadowRadius = 1.0
-        //        drinkList.clipsToBounds = false
-        //        drinkList.layer.masksToBounds = false
         view.setNeedsLayout()
         clojure()
     }
     
     func setupText() {
-        //var font = UIFont.preferredFont(forTextStyle: .headline)
         let costText = NSAttributedString(string: drinksModel.cost, attributes: localAttributes)
         textView = UILabel()
-        //textView?.backgroundColor = Colors.blue
         textView?.textAlignment = .center
         textView?.adjustsFontSizeToFitWidth = true
-        //textView?.font = localAttributes?[.font] as! UIFont
-        //textView?.contentMode = UIViewContentMode.center
         if let textViewObject = textView {
             textViewObject.attributedText = costText
             collectionViewContainer.addSubview(textViewObject)
             textViewObject.translatesAutoresizingMaskIntoConstraints = false
             let left = textViewObject.leftAnchor.constraint(equalTo: drinkList.rightAnchor)
             let right = textViewObject.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor)
-            //let top = textViewObject.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor)
-            //let bottom = textViewObject.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor)
             let center = textViewObject.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor)
             NSLayoutConstraint.activate([left, right, center])//top, bottom])
         }
@@ -146,7 +133,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
         let backView = drinkView.drinkImages[drinksModel.backgroundDrinkIndex]
         // This one should fix the center
-        let first_x = drinkView.layer.position.x + 23
+        let first_x = drinkView.layer.position.x + Constants.centerOffset
         let first_y = drinkView.layer.position.y
         let end_x = drinkView.layer.position.x + 125
         let end_y = drinkView.layer.position.y - 75
@@ -205,25 +192,58 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         }
     }
     
-    func rotateDrink (cellAnimation: @escaping () -> Void) {
+    func rotateDrink () {
+        let first_x = drinkView.layer.position.x + Constants.centerOffset
+        let first_y = drinkView.layer.position.y
+         let endPoint = CGPoint(x: drinkView.layer.position.x + 25, y: drinkView.layer.position.y - 25)
+        
         let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
-        let aDuration = 0.4
+        let aDuration = 0.3
+        let fullRotation: Double = -1/2/2/1.6
+        let animationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 50), duration: aDuration)
+        
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+             //cellAnimation()
+        }
+        let animationGroup = CAAnimationGroup()
+        animationGroup.animations = [animationsFactory.coreAnimationPosition(animationModel: animationModel), animationsFactory.coreAnimationRotation(piRatio: fullRotation, animationDuration: aDuration)]
+        animationGroup.duration = aDuration
+        animationGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        animationGroup.autoreverses = true
+        animationGroup.fillMode = kCAFillModeForwards
+        animationGroup.isRemovedOnCompletion = true
+        frontView.layer.add(animationGroup, forKey: "pickAnimation")
+        frontView.layer.position = endPoint
+       CATransaction.commit()
         // Group these
-        UIView.animateKeyframes(withDuration: aDuration, delay: 0, options: [.calculationModeCubicPaced],
-            animations: {
-            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
-                frontView.transform = CGAffineTransform(translationX: -10, y:  -50)
-            })
-            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
-               frontView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/3))
-            })
-               
-        }, completion: { (_: Bool) in
-            cellAnimation()
-            UIView.animate(withDuration: 0.2, animations: {
-                frontView.transform = CGAffineTransform(rotationAngle: CGFloat(0))
-            })
-        })
+//        UIView.animateKeyframes(withDuration: aDuration, delay: 0, options: [.calculationModeCubicPaced],
+//            animations: {
+//            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2, animations: {
+//                frontView.transform = CGAffineTransform(translationX: -5, y:  -25)
+//            })
+//            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.2, animations: {
+//               frontView.transform = CGAffineTransform(rotationAngle: 1/3 * fullRotation)
+//            })
+//            UIView.addKeyframe(withRelativeStartTime: 0.4, relativeDuration: 0.2, animations: {
+//                frontView.transform = CGAffineTransform(translationX: -7, y:  -40)
+//            })
+//            UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.2, animations: {
+//                frontView.transform = CGAffineTransform(rotationAngle: 2/3 * fullRotation)
+//            })
+//            UIView.addKeyframe(withRelativeStartTime: 0.8, relativeDuration: 0.2, animations: {
+//                frontView.transform = CGAffineTransform(translationX: -10, y:  -50)
+//            })
+//            UIView.addKeyframe(withRelativeStartTime: 0.95, relativeDuration: 0.2, animations: {
+//                frontView.transform = CGAffineTransform(rotationAngle: fullRotation)
+//            })
+//
+//        }, completion: { (_: Bool) in
+//            cellAnimation()
+////            UIView.animate(withDuration: 0.2, animations: {
+////                frontView.transform = CGAffineTransform(rotationAngle: CGFloat(0))
+////            })
+//        })
     }
     
     func animateDrinkScale(_ animationModel: ScaleAnimation) -> CABasicAnimation {
@@ -231,7 +251,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return scaleAnimation
     }
     
-    func animatePrice() {
+    func animatePrice(cellAnimation: @escaping () -> Void) {
         let animationModel = KeyFrameScaleSpringModel(start: 1, end: 0.05, swing: 1)
         let animation = animationsFactory.coreAnimationKeyFrameScaleSpring(animationModel)
         if let textViewObject = textView {
@@ -242,7 +262,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             textViewObject.layer.add(animation, forKey: "scaleText")
             textViewObject.contentScaleFactor = animationModel.start
             CATransaction.commit()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {self.updatePriceFromModel()})
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {self.updatePriceFromModel(); cellAnimation()})
             
         }
     }
@@ -327,12 +347,12 @@ extension ViewController: DrinkViewDelegate {
         drinksModel.animatedLast = false
         drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
         drinksModel.buy(drink: drinksModel.currentDrink)
-        animatePrice()
-        rotateDrink(){
+        animatePrice(){
             self.drinkList.reloadData()
             let ip = IndexPath(row: 0, section: self.drinksModel.drinksListItem.count-1)
             self.drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
         }
+        rotateDrink()
     }
     
     @objc
