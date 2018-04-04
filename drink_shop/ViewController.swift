@@ -21,6 +21,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     let drinkView = DrinkView()
     let modalView = DSModal()
     let animationsFactory = AnimationsFactory()
+    var dropPoint: CGPoint!
     var drinkList: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -46,8 +47,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("loaded")
         drinkView.delegate = self
-        view.backgroundColor = Colors.blue
+        view.backgroundColor = Colors.purple
         view.addSubview(drinkView)
         //view.addSubview(orderButton)
         view.addSubview(collectionViewContainer)
@@ -64,11 +66,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     func setupViews () {
         drinkView.translatesAutoresizingMaskIntoConstraints = false
-        drinkView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -1.5*view.frame.height/3).isActive = true
+        drinkView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(1/2) * view.frame.height + 50).isActive = true
         drinkView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         drinkView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         drinkView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        drinkView.backgroundColor = UIColor(red: 75/255, green: 0/255, blue: 130/255,alpha:1)
+        drinkView.backgroundColor = Colors.purple
         drinkView.layer.shadowColor = UIColor.black.cgColor
         drinkView.layer.shadowOpacity = 1
         drinkView.layer.shadowOffset = CGSize.zero
@@ -94,7 +96,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.translatesAutoresizingMaskIntoConstraints = false
         drinkList.dataSource = self
         drinkList.delegate = self
-        drinkList.backgroundColor = Colors.blue
+        drinkList.backgroundColor = Colors.purple
         //drinkList.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
         drinkList.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
         drinkList.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
@@ -271,7 +273,7 @@ extension ViewController {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 110 , height: 175)
+        return Constants.cellSize
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -285,7 +287,7 @@ extension ViewController {
             if collectionView.numberOfSections > 2 {
                 let previousCell = collectionView.cellForItem(at: IndexPath(row: 0, section:indexPath.section - 1 ))
             }
-            let from = CGPoint(x: cell.layer.position.x, y: -10)
+            let from =  CGPoint(x: cell.layer.position.x - Constants.cellSize.width/2 , y: -10)
             let to = CGPoint(x: cell.layer.position.x, y: drinkCell.layer.position.y )
             let springAnimation = self.animationsFactory.coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.2))
             cell.layer.add(springAnimation, forKey: "springListCell")
