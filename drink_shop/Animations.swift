@@ -92,7 +92,7 @@ struct AnimationsFactory {
             let duration = keyFrameModel.duration
             let swing: Double = 1
             var values = [start, end, swing]
-            let jumpingVarians: Constants.JumpingVarians = .small
+            let jumpingVarians: JumpingVarians = keyFrameModel.jumpingVarians ?? .big
             for i in (1...jumps).reversed() {
                 let factor = Double(i)
                 switch jumpingVarians {
@@ -148,6 +148,7 @@ struct CustomeKeyFrameSpringScaleModel {
     let timingFunction: String
     let jumps: Int
     let end: Double
+    let jumpingVarians: JumpingVarians?
 }
 
 

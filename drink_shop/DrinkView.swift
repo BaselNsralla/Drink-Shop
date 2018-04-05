@@ -71,28 +71,43 @@ class DrinkView: UIView {
     func setupButtons(){
         orderButton.addTarget(self, action: #selector(orderPressed(_:)), for: .touchDown)
         switchButton.addTarget(self, action: #selector(switchPressed(_:)), for: .touchDown)
+        orderButton.addTarget(self, action: #selector(buttonReleased(_:)), for: .touchUpInside)
+        switchButton.addTarget(self, action: #selector(buttonReleased(_:)), for: .touchUpInside)
     }
     
     
     func buildButtonsImageConstraints() {
         switchImage.translatesAutoresizingMaskIntoConstraints = false
         orderImage.translatesAutoresizingMaskIntoConstraints = false
-        switchImage.widthAnchor.constraint(equalToConstant: CGFloat(Constants.buttonWidth - 10)).isActive = true
-        switchImage.heightAnchor.constraint(equalToConstant: CGFloat(Constants.buttonHeight - 10)).isActive = true
-        switchImage.centerXAnchor.constraint(equalTo: switchButton.centerXAnchor).isActive = true
-        switchImage.centerYAnchor.constraint(equalTo: switchButton.centerYAnchor).isActive = true
-        orderImage.widthAnchor.constraint(equalToConstant: CGFloat(Constants.buttonWidth - 10)).isActive = true
-        orderImage.heightAnchor.constraint(equalToConstant: CGFloat(Constants.buttonHeight - 10)).isActive = true
-        orderImage.centerXAnchor.constraint(equalTo: orderButton.centerXAnchor).isActive = true
-        orderImage.centerYAnchor.constraint(equalTo: orderButton.centerYAnchor).isActive = true
+//        switchImage.widthAnchor.constraint(equalToConstant: CGFloat(Constants.buttonWidth - 10)).isActive = true
+//        switchImage.heightAnchor.constraint(equalToConstant: CGFloat(Constants.buttonHeight - 10)).isActive = true
+//        switchImage.centerXAnchor.constraint(equalTo: switchButton.centerXAnchor).isActive = true
+//        switchImage.centerYAnchor.constraint(equalTo: switchButton.centerYAnchor).isActive = true
+//        orderImage.widthAnchor.constraint(equalToConstant: CGFloat(Constants.buttonWidth - 20)).isActive = true
+//        orderImage.heightAnchor.constraint(equalToConstant: CGFloat(Constants.buttonHeight - 17)).isActive = true
+//        orderImage.centerXAnchor.constraint(equalTo: orderButton.centerXAnchor).isActive = true
+//        orderImage.centerYAnchor.constraint(equalTo: orderButton.centerYAnchor).isActive = true
+        
+        switchImage.topAnchor.constraint(equalTo: switchButton.topAnchor, constant: 10).isActive = true
+        orderImage.topAnchor.constraint(equalTo: orderButton.topAnchor, constant: 10).isActive = true
+        
+        switchImage.bottomAnchor.constraint(equalTo: switchButton.bottomAnchor, constant: -10).isActive = true
+        orderImage.bottomAnchor.constraint(equalTo: orderButton.bottomAnchor, constant: -10).isActive = true
+        
+        switchImage.leftAnchor.constraint(equalTo: switchButton.leftAnchor, constant: 10).isActive = true
+        orderImage.leftAnchor.constraint(equalTo: orderButton.leftAnchor, constant: 10).isActive = true
+        
+        switchImage.rightAnchor.constraint(equalTo: switchButton.rightAnchor, constant: -10).isActive = true
+        orderImage.rightAnchor.constraint(equalTo: orderButton.rightAnchor, constant: -10).isActive = true
+        
     }
     
     func buildDrinksConstraints() {
         var constraints = [NSLayoutConstraint]()
         for i in 0..<drinkImages.count {
             drinkImages[i].translatesAutoresizingMaskIntoConstraints = false
-            let right = drinkImages[i].rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
-            let left = drinkImages[i].leftAnchor.constraint(equalTo: leftAnchor, constant: 60)
+            let right = drinkImages[i].rightAnchor.constraint(equalTo: rightAnchor, constant: -10)
+            let left = drinkImages[i].leftAnchor.constraint(equalTo: leftAnchor, constant: 70)
             let top = drinkImages[i].topAnchor.constraint(equalTo: topAnchor, constant: 50)
             let bottom = drinkImages[i].bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50)
             constraints.append(contentsOf: [top, bottom, left, right])
@@ -124,6 +139,11 @@ class DrinkView: UIView {
     
     @objc func switchPressed(_: AnyObject?) {
         delegate.switchDrink()
+    }
+    
+    @objc func buttonReleased(_: AnyObject?) {
+        
+        
     }
     
 }
