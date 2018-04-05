@@ -48,10 +48,13 @@ class DrinkCell: UICollectionViewCell {
         let point = sender.translation(in: drinkList)
         //let drinkLayout = drinkList.layoutAttributesForItem(at: IndexPath(row: 0, section: drink.section!))!
         drink.image.center = CGPoint(x: drink.image.center.x, y:  drink.bounds.midY + point.y)
-        
+        let normPi = (CGFloat.pi/Constants.cellSize.height)
+        let factor = point.y
+        drink.image.transform = CGAffineTransform(rotationAngle: normPi * factor)
         if sender.state == .ended {
             UIView.animate(withDuration: 0.2, animations: {
                 drink.image.center = CGPoint(x:  drink.bounds.midX  , y: drink.bounds.midY)
+                drink.image.transform = CGAffineTransform(rotationAngle: 0)
             })
         }
         print("SOMETHING MOVED")
