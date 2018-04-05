@@ -242,7 +242,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             //textViewObject.minimumScaleFactor = 1
         
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {self.updatePriceFromModel(); cellAnimation();})
-            let animation = animationsFactory.customeKeyFrameScaleSpring(CustomeKeyFrameSpringScaleModel(duration: 2, start: nil, timingFunction: kCAMediaTimingFunctionDefault, jumps: 2, end: 0.05, jumpingVarians: nil))
+            let animation = animationsFactory.customeKeyFrameScaleSpring(CustomeKeyFrameSpringScaleModel(duration: 2, start: nil, timingFunction: kCAMediaTimingFunctionDefault, jumps: 2, end: 0.05, jumpingVarians: .big))
             textViewObject.layer.add(animation, forKey: "flexingText")
             textViewObject.layer.rasterizationScale = 1
 
