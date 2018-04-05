@@ -118,8 +118,6 @@ struct AnimationsFactory {
             for i in 0..<values.count {
                 bites.append(NSNumber(value: bite*Double(i)))
             }
-            bites.removeLast()
-            bites.append(NSNumber(value: 1))
             print(bites)
             keyFrameAnimation.keyTimes = bites
             keyFrameAnimation.duration = duration

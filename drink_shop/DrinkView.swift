@@ -69,24 +69,18 @@ class DrinkView: UIView {
     }
     
     func setupButtons(){
-        orderButton.addTarget(self, action: #selector(orderPressed(_:)), for: .touchDown)
-        switchButton.addTarget(self, action: #selector(switchPressed(_:)), for: .touchDown)
-        orderButton.addTarget(self, action: #selector(buttonReleased(_:)), for: .touchUpInside)
-        switchButton.addTarget(self, action: #selector(buttonReleased(_:)), for: .touchUpInside)
+        orderButton.addTarget(self, action: #selector(buttonPressed(target:)), for: .touchDown)
+        switchButton.addTarget(self, action: #selector(buttonPressed(target:)), for: .touchDown)
+        orderButton.addTarget(self, action: #selector(orderReleased(_:)), for: .touchUpInside)
+        switchButton.addTarget(self, action: #selector(switchReleased(_:)), for: .touchUpInside)
+        switchButton.addTarget(self, action: #selector(switchReleased(_:)), for: .touchUpOutside)
+        orderButton.addTarget(self, action: #selector(orderReleased(_:)), for: .touchUpOutside)
     }
     
     
     func buildButtonsImageConstraints() {
         switchImage.translatesAutoresizingMaskIntoConstraints = false
         orderImage.translatesAutoresizingMaskIntoConstraints = false
-//        switchImage.widthAnchor.constraint(equalToConstant: CGFloat(Constants.buttonWidth - 10)).isActive = true
-//        switchImage.heightAnchor.constraint(equalToConstant: CGFloat(Constants.buttonHeight - 10)).isActive = true
-//        switchImage.centerXAnchor.constraint(equalTo: switchButton.centerXAnchor).isActive = true
-//        switchImage.centerYAnchor.constraint(equalTo: switchButton.centerYAnchor).isActive = true
-//        orderImage.widthAnchor.constraint(equalToConstant: CGFloat(Constants.buttonWidth - 20)).isActive = true
-//        orderImage.heightAnchor.constraint(equalToConstant: CGFloat(Constants.buttonHeight - 17)).isActive = true
-//        orderImage.centerXAnchor.constraint(equalTo: orderButton.centerXAnchor).isActive = true
-//        orderImage.centerYAnchor.constraint(equalTo: orderButton.centerYAnchor).isActive = true
         
         switchImage.topAnchor.constraint(equalTo: switchButton.topAnchor, constant: 10).isActive = true
         orderImage.topAnchor.constraint(equalTo: orderButton.topAnchor, constant: 10).isActive = true
@@ -99,7 +93,6 @@ class DrinkView: UIView {
         
         switchImage.rightAnchor.constraint(equalTo: switchButton.rightAnchor, constant: -10).isActive = true
         orderImage.rightAnchor.constraint(equalTo: orderButton.rightAnchor, constant: -10).isActive = true
-        
     }
     
     func buildDrinksConstraints() {
@@ -132,18 +125,25 @@ class DrinkView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc func buttonPressed(target : AnyObject?) {
+        let btn = target as! UIButton
+        UIView.animate(withDuration: 0.2, animations: {
+            btn.transform = CGAffineTransform(scaleX: 0.35, y: 0.35)
+        })
+    }
     
-    @objc func orderPressed(_: AnyObject?) {
+    @objc func orderReleased(_: AnyObject?) {
+        UIView.animate(withDuration: 0.2, animations: {
+            self.orderButton.transform = CGAffineTransform(scaleX: 1, y: 1)
+        })
         delegate.orderDrink()
     }
     
-    @objc func switchPressed(_: AnyObject?) {
+    @objc func switchReleased(_: AnyObject?) {
+        UIView.animate(withDuration: 0.2, animations: {
+            self.switchButton.transform = CGAffineTransform(scaleX: 1, y: 1)
+        })
         delegate.switchDrink()
-    }
-    
-    @objc func buttonReleased(_: AnyObject?) {
-        
-        
     }
     
 }
