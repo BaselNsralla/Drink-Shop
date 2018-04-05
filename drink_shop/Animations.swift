@@ -85,15 +85,15 @@ struct AnimationsFactory {
     
      func customeKeyFrameScaleSpring(_ keyFrameModel: CustomeKeyFrameSpringScaleModel)
         -> CAKeyframeAnimation {
-            let jumps = 5
-            let timingFunction = kCAMediaTimingFunctionEaseInEaseOut
-            let start: Double = 1
-            let end = 0.4
-            let duration = 1.5
+            let jumps = keyFrameModel.jumps
+            let timingFunction = keyFrameModel.timingFunction
+            let start: Double = keyFrameModel.start ?? 1
+            let end = keyFrameModel.end
+            let duration = keyFrameModel.duration
             let swing: Double = 1
             var values = [start, end, swing]
             let jumpingVarians: Constants.JumpingVarians = .small
-            for i in jumps...1 {
+            for i in (1...jumps).reversed() {
                 let factor = Double(i)
                 switch jumpingVarians {
                 case .small:
@@ -110,7 +110,7 @@ struct AnimationsFactory {
                     values.append(swing - (0.1/(i < jumps/2 ? 1 : 2) * factor))
                 }
             }
-            values.append(end)
+            values.append(swing)
             let keyFrameAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
             keyFrameAnimation.values = values
             var bites = [NSNumber]()
@@ -143,7 +143,11 @@ struct AnimationsFactory {
 
 
 struct CustomeKeyFrameSpringScaleModel {
-    
+    let duration: Double
+    let start: Double?
+    let timingFunction: String
+    let jumps: Int
+    let end: Double
 }
 
 

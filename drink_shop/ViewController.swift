@@ -115,6 +115,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         textView = UILabel()
         textView?.textAlignment = .center
         textView?.adjustsFontSizeToFitWidth = true
+        
         if let textViewObject = textView {
             textViewObject.attributedText = costText
             collectionViewContainer.addSubview(textViewObject)
@@ -123,6 +124,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             let right = textViewObject.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor)
             let center = textViewObject.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor)
             NSLayoutConstraint.activate([left, right, center])//top, bottom])
+            //textViewObject.contentScaleFactor = 1
         }
     }
     
@@ -224,8 +226,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
  
     
     func animatePrice(cellAnimation: @escaping () -> Void) {
-        let animationModel = KeyFrameScaleSpringModel(start: 1, end: 0.05, swing: 1)
-        let animation = animationsFactory.keyFrameScaleSpringAnimation(animationModel)
+//        let animationModel = KeyFrameScaleSpringModel(start: 1, end: 0.05, swing: 1)
+//        let animation = animationsFactory.keyFrameScaleSpringAnimation(animationModel)
         if let textViewObject = textView {
 //            CATransaction.begin()
 //            CATransaction.setCompletionBlock({
@@ -237,15 +239,22 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 //            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {self.updatePriceFromModel(); cellAnimation()})
 //
 //
-            UIView.animate(withDuration: 0.5, delay: 0, options: [], animations: {
-                textViewObject.transform = CGAffineTransform(scaleX: 0.05, y: 0.05)
-            }, completion: { (_) in
-                self.updatePriceFromModel(); cellAnimation()
-                UIView.animate(withDuration: 1.1, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 17, options: .curveEaseOut, animations: {
-                       textViewObject.transform = CGAffineTransform(scaleX: 1, y: 1)
-                })
-            })
-            
+            //textViewObject.minimumScaleFactor = 1
+        
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {self.updatePriceFromModel(); cellAnimation();})
+            let animation = animationsFactory.customeKeyFrameScaleSpring(CustomeKeyFrameSpringScaleModel(duration: 1.8, start: nil, timingFunction: kCAMediaTimingFunctionEaseInEaseOut, jumps: 3, end: 0.05))
+            textViewObject.layer.add(animation, forKey: "flexingText")
+            textViewObject.layer.rasterizationScale = 1
+
+//            UIView.animate(withDuration: 0.5, delay: 0, options: [], animations: {
+//                textViewObject.transform = CGAffineTransform(scaleX: 0.05, y: 0.05)
+//            }, completion: { (_) in
+//                self.updatePriceFromModel(); cellAnimation()
+//                UIView.animate(withDuration: 1.1, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 17, options: .curveEaseOut, animations: {
+//                       textViewObject.transform = CGAffineTransform(scaleX: 1, y: 1)
+//                })
+//            })
+//
             
         }
     }
