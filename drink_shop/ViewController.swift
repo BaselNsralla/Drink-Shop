@@ -102,6 +102,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor, constant: -view.frame.width/2 + 10).isActive = true
         drinkList.leftAnchor.constraint(equalTo: collectionViewContainer.leftAnchor).isActive = true
         drinkList.isUserInteractionEnabled = true
+        drinkList.delaysContentTouches = false
         view.setNeedsLayout()
         clojure()
     }
@@ -141,8 +142,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let swing_y = end_y
         let reverseKeyFrameModel = KeyFramePositionModel(start: CGPoint(x: swing_x, y: swing_y), end: CGPoint(x: first_x , y: swing_y + 50), swing: CGPoint(x: first_x, y: first_y))
         let keyFrameModel = KeyFramePositionModel(start: CGPoint(x: first_x, y: first_y), end: CGPoint(x: end_x, y: end_y), swing: CGPoint(x: swing_x, y: swing_y))
-        let frontToBack = animationsFactory.makeKeyFramAnimation(keyFrameModel)
-        let backToFront = animationsFactory.makeKeyFramAnimation(reverseKeyFrameModel)
+        let frontToBack = animationsFactory.keyFramePositionAnimation(keyFrameModel)
+        let backToFront = animationsFactory.keyFramePositionAnimation(reverseKeyFrameModel)
         backView.layer.add(backToFront, forKey: "backToFront")
         frontView.layer.add(frontToBack, forKey: "frontToBack")
     }
@@ -199,38 +200,49 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let first_y = frontView.layer.position.y
          let endPoint = CGPoint(x: frontView.layer.position.x, y: frontView.layer.position.y)
         
-        let aDuration = 0.28
-        let fullRotation: Double = -1/2/2/2
-        let positionAnimationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 40), duration: aDuration)
+        let aDuration = 0.23
+        let fullRotation: Double = -0.25/1.4
+        let positionAnimationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 60), duration: aDuration)
         let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.8, duration: aDuration, fillMode: kCAFillModeForwards)
-        CATransaction.begin()
-        CATransaction.setCompletionBlock {}
-        let animationGroup = CAAnimationGroup()
-        animationGroup.animations = [animationsFactory.coreAnimationPosition(animationModel: positionAnimationModel), animationsFactory.coreAnimationRotation(piRatio: fullRotation, animationDuration: aDuration),
+       CATransaction.begin()
+         CATransaction.setCompletionBlock {}
+         let animationGroup = CAAnimationGroup()
+         animationGroup.animations = [animationsFactory.coreAnimationPosition(animationModel: positionAnimationModel), animationsFactory.coreAnimationRotation(piRatio: fullRotation, animationDuration: aDuration),
             animationsFactory.coreAnimationScale(animationModel: scaleAnimationModel)]
-        animationGroup.duration = aDuration
-        animationGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        animationGroup.autoreverses = true
-        animationGroup.fillMode = kCAFillModeForwards
-        animationGroup.isRemovedOnCompletion = true
-        frontView.layer.add(animationGroup, forKey: "pickAnimation")
-        frontView.layer.position = endPoint
+         animationGroup.duration = aDuration
+         animationGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+         animationGroup.autoreverses = true
+         animationGroup.fillMode = kCAFillModeForwards
+         animationGroup.isRemovedOnCompletion = true
+         frontView.layer.add(animationGroup, forKey: "pickAnimation")
+         frontView.layer.position = endPoint
        CATransaction.commit()
     }
  
     
     func animatePrice(cellAnimation: @escaping () -> Void) {
         let animationModel = KeyFrameScaleSpringModel(start: 1, end: 0.05, swing: 1)
-        let animation = animationsFactory.coreAnimationKeyFrameScaleSpring(animationModel)
+        let animation = animationsFactory.keyFrameScaleSpringAnimation(animationModel)
         if let textViewObject = textView {
-            CATransaction.begin()
-            CATransaction.setCompletionBlock({
-                self.textView?.contentScaleFactor = 1
+//            CATransaction.begin()
+//            CATransaction.setCompletionBlock({
+//                self.textView?.contentScaleFactor = 1
+//            })
+//            textViewObject.layer.add(animation, forKey: "scaleText")
+//            textViewObject.contentScaleFactor = animationModel.start
+//            CATransaction.commit()
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {self.updatePriceFromModel(); cellAnimation()})
+//
+//
+            UIView.animate(withDuration: 0.5, delay: 0, options: [], animations: {
+                textViewObject.transform = CGAffineTransform(scaleX: 0.05, y: 0.05)
+            }, completion: { (_) in
+                self.updatePriceFromModel(); cellAnimation()
+                UIView.animate(withDuration: 1.1, delay: 0, usingSpringWithDamping: 0.35, initialSpringVelocity: 7, options: .curveEaseOut, animations: {
+                       textViewObject.transform = CGAffineTransform(scaleX: 1, y: 1)
+                })
             })
-            textViewObject.layer.add(animation, forKey: "scaleText")
-            textViewObject.contentScaleFactor = animationModel.start
-            CATransaction.commit()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {self.updatePriceFromModel(); cellAnimation()})
+            
             
         }
     }
@@ -242,12 +254,15 @@ extension ViewController {
         //fxView.frame = view.bounds
         //modalView.showModal(at: sender.frame)
     }
+    
+
 }
 
 extension ViewController {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
         let id = indexPath.section
+        cell.section = id
         print("section is ", indexPath.section, "  Item is ", indexPath.item)
         print(id)
         print("Row", indexPath.row)
@@ -275,7 +290,7 @@ extension ViewController {
             if collectionView.numberOfSections > 2 {
                 let previousCell = collectionView.cellForItem(at: IndexPath(row: 0, section:indexPath.section - 1 ))
             }
-            let from =  CGPoint(x: cell.layer.position.x - Constants.cellSize.width/2 , y: -10)
+            let from =  CGPoint(x: collectionView.bounds.maxX - Constants.cellSize.width/4 , y: -10)
             let to = CGPoint(x: cell.layer.position.x, y: drinkCell.layer.position.y )
             let springAnimation = self.animationsFactory.coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.2))
             cell.layer.add(springAnimation, forKey: "springListCell")

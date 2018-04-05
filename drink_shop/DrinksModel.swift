@@ -11,7 +11,7 @@ import Foundation
 struct DrinksModel {
     let drinksCount = 10
     var drinksListItem = [String]()
-    var currentDrink: drinkPick = .frappe
+    var currentDrink: drinkPick = .latte
     var currency = "€"
     var cost:String
     enum drinkPick: String {
@@ -19,8 +19,8 @@ struct DrinksModel {
         case latte = "latte_straw"
     }
     var prices : [drinkPick : Int] = [.frappe: 10, .latte: 15]
-    var currentDrinkIndex = 0
-    var backgroundDrinkIndex = 1
+    var currentDrinkIndex = 1
+    var backgroundDrinkIndex = 0
     var animatedLast = false
     
     mutating func switchDrinks () {

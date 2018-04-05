@@ -5,13 +5,9 @@
 //  Created by Basel on 2018-04-04.
 //  Copyright © 2018 Basel. All rights reserved.
 //
-
-import Foundation
 import UIKit
-class AnimationsFactory {
-}
 
-extension AnimationsFactory {
+struct AnimationsFactory {
      func coreAnimationPosition(animationModel: PositionAnimation) -> CABasicAnimation {
         let basicAnimation = CABasicAnimation(keyPath: "position")
         basicAnimation.fromValue = NSValue(cgPoint: animationModel.from)
@@ -66,7 +62,7 @@ extension AnimationsFactory {
             return springAnimation
     }
     
-     func coreAnimationKeyFrameScaleSpring(_ keyFrameModel: KeyFrameScaleSpringModel)
+     func keyFrameScaleSpringAnimation(_ keyFrameModel: KeyFrameScaleSpringModel)
         -> CAKeyframeAnimation {
             let keyFrameAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
             keyFrameAnimation.values = [keyFrameModel.start, keyFrameModel.end, keyFrameModel.swing, keyFrameModel.swing+0.1,keyFrameModel.swing - 0.1, keyFrameModel.swing+0.05, keyFrameModel.start]
@@ -87,7 +83,7 @@ extension AnimationsFactory {
             return keyFrameAnimation
     }
     
-     func customeKeyFrameSpringScale(_ keyFrameModel: CustomeKeyFrameSpringScaleModel)
+     func customeKeyFrameScaleSpring(_ keyFrameModel: CustomeKeyFrameSpringScaleModel)
         -> CAKeyframeAnimation {
             let jumps = 5
             let timingFunction = kCAMediaTimingFunctionEaseInEaseOut
@@ -132,7 +128,7 @@ extension AnimationsFactory {
     }
     
     
-     func makeKeyFramAnimation (_ animationModel: KeyFramePositionModel) -> CAKeyframeAnimation {
+     func keyFramePositionAnimation (_ animationModel: KeyFramePositionModel) -> CAKeyframeAnimation {
         let keyFrameAnimation = CAKeyframeAnimation(keyPath: "position")
         keyFrameAnimation.values = [animationModel.start, animationModel.end, animationModel.swing]
         keyFrameAnimation.keyTimes = [0.25, 0.7, 1]
