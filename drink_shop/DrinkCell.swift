@@ -22,7 +22,6 @@ class DrinkCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(image)
-        //buildConstraints()
         image.translatesAutoresizingMaskIntoConstraints = false
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(panDrink(_:)))
         addGestureRecognizer(gesture)
@@ -55,7 +54,6 @@ class DrinkCell: UICollectionViewCell {
         let factor = point.y
         drink.image.transform = CGAffineTransform(rotationAngle: normPi * factor)
         if gesture.state == .ended {
-            print(drink.image.bounds.midY, self.section)
             if  drink.image.center.y < drink.image.bounds.minY || drink.image.center.y > drink.image.bounds.maxY  {
                 if  let delegate = deleteDelegate {
                     let endFlight: CGFloat =  drink.image.center.y < drink.image.bounds.minY ? -Constants.cellSize.height: 2*Constants.cellSize.height
@@ -73,6 +71,5 @@ class DrinkCell: UICollectionViewCell {
                 })
             }
         }
-        print("SOMETHING MOVED")
     }
 }

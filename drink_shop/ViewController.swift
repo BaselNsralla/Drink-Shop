@@ -45,18 +45,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let effect = UIBlurEffect(style: UIBlurEffectStyle.dark)
         view.effect = effect
         return view
-           //fxView.frame = view.bounds
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("loaded")
         drinkView.delegate = self
         view.backgroundColor = Colors.purple
         view.addSubview(drinkView)
-        //view.addSubview(orderButton)
         view.addSubview(collectionViewContainer)
-        //view.addSubview(switchButton)
         view.addSubview(fxView)
         setupViews()
         setupList(){}
@@ -113,10 +109,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func setupText() {
         let costText = NSAttributedString(string: drinksModel.cost, attributes: localAttributes)
         textView = UILabel()
-        textView?.textAlignment = .center
-        textView?.adjustsFontSizeToFitWidth = true
-        
         if let textViewObject = textView {
+            textViewObject.textAlignment = .center
+            textViewObject.adjustsFontSizeToFitWidth = true
             textViewObject.attributedText = costText
             collectionViewContainer.addSubview(textViewObject)
             textViewObject.translatesAutoresizingMaskIntoConstraints = false
@@ -124,7 +119,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             let right = textViewObject.rightAnchor.constraint(equalTo: collectionViewContainer.rightAnchor)
             let center = textViewObject.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor)
             NSLayoutConstraint.activate([left, right, center])//top, bottom])
-            //textViewObject.contentScaleFactor = 1
         }
     }
     
@@ -134,140 +128,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         setupAnimations()
         drinksModel.switchDrinks()
     }
-    
-    private func setupKeyFrameAnimations() {
-        let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
-        let backView = drinkView.drinkImages[drinksModel.backgroundDrinkIndex]
-        // This one should fix the center
-        let first_x = frontView.layer.position.x
-        let first_y = frontView.layer.position.y
-        let end_x = frontView.layer.position.x + 125
-        let end_y = frontView.layer.position.y - 75
-        let swing_x = end_x - 25
-        let swing_y = end_y
-        let reverseKeyFrameModel = KeyFramePositionModel(start: CGPoint(x: swing_x, y: swing_y), end: CGPoint(x: first_x , y: swing_y + 50), swing: CGPoint(x: first_x, y: first_y))
-        let keyFrameModel = KeyFramePositionModel(start: CGPoint(x: first_x, y: first_y), end: CGPoint(x: end_x, y: end_y), swing: CGPoint(x: swing_x, y: swing_y))
-        let frontToBack = animationsFactory.keyFramePositionAnimation(keyFrameModel)
-        let backToFront = animationsFactory.keyFramePositionAnimation(reverseKeyFrameModel)
-        backView.layer.add(backToFront, forKey: "backToFront")
-        frontView.layer.add(frontToBack, forKey: "frontToBack")
-    }
-    
-
-    private func setupAnimations() {
-        let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
-        let backView = drinkView.drinkImages[drinksModel.backgroundDrinkIndex]
-        let animationGroup = CAAnimationGroup()
-        let animationGroupReverse = CAAnimationGroup()
-        let endPoint = CGPoint(x: drinkView.layer.position.x + 25, y: drinkView.layer.position.y - 25)
-        let rotationDuration: Double = 0.2
-        
-        let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.4, duration: 0.2, fillMode: kCAFillModeForwards)
-        animationGroup.delegate = self
-        animationGroup.animations = [ animationsFactory.coreAnimationScale(animationModel: scaleAnimationModel)]
-        animationGroup.duration = 0.2
-        animationGroup.fillMode = kCAFillModeForwards
-        animationGroup.isRemovedOnCompletion = false
-        
-        let scaleAnimationModelReverse = ScaleAnimation(from: 0.4, to: 1, duration: 0.2, fillMode: kCAFillModeForwards)
-        animationGroupReverse.delegate = self
-        animationGroupReverse.animations = [ animationsFactory.coreAnimationScale(animationModel: scaleAnimationModelReverse)]
-        animationGroupReverse.duration = 0.2
-        animationGroupReverse.fillMode = kCAFillModeForwards
-        animationGroupReverse.isRemovedOnCompletion = false
-        
-        frontView.layer.zPosition = 2
-        backView.layer.zPosition = 3
-        
-        frontView.layer.add(animationGroup, forKey: "transform.scale")
-        backView.layer.add(animationGroupReverse, forKey: "transform.scale")
-    
-        frontView.layer.contentsScale = scaleAnimationModel.to
-        backView.layer.contentsScale = scaleAnimationModelReverse.to
-        frontView.layer.position = frontView.layer.position
-        backView.layer.position = frontView.layer.position
-
-        UIView.animate(withDuration: rotationDuration,delay:0 ,options: UIViewAnimationOptions.curveEaseIn, animations: {
-            backView.transform = CGAffineTransform(rotationAngle: CGFloat(Float.pi/2/4))
-            frontView.transform = CGAffineTransform(rotationAngle: CGFloat(-Float.pi/2/4))
-        }){ (_) in
-            UIView.animate(withDuration: rotationDuration, animations: {
-                backView.transform = CGAffineTransform(rotationAngle: CGFloat(0))
-                frontView.transform = CGAffineTransform(rotationAngle: CGFloat(0))
-            })
-        }
-    }
-    
-    func rotateDrink () {
-        let frontView = drinkView.drinkImages[drinksModel.currentDrinkIndex]
-
-        let first_x = frontView.layer.position.x
-        let first_y = frontView.layer.position.y
-         let endPoint = CGPoint(x: frontView.layer.position.x, y: frontView.layer.position.y)
-        
-        let aDuration = 0.23
-        let fullRotation: Double = -0.25/1.4
-        let positionAnimationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 60), duration: aDuration)
-        let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.8, duration: aDuration, fillMode: kCAFillModeForwards)
-       CATransaction.begin()
-         CATransaction.setCompletionBlock {}
-         let animationGroup = CAAnimationGroup()
-         animationGroup.animations = [animationsFactory.coreAnimationPosition(animationModel: positionAnimationModel), animationsFactory.coreAnimationRotation(piRatio: fullRotation, animationDuration: aDuration),
-            animationsFactory.coreAnimationScale(animationModel: scaleAnimationModel)]
-         animationGroup.duration = aDuration
-         animationGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-         animationGroup.autoreverses = true
-         animationGroup.fillMode = kCAFillModeForwards
-         animationGroup.isRemovedOnCompletion = true
-         frontView.layer.add(animationGroup, forKey: "pickAnimation")
-         frontView.layer.position = endPoint
-       CATransaction.commit()
-    }
- 
-    
-    func animatePrice(cellAnimation: @escaping () -> Void) {
-//        let animationModel = KeyFrameScaleSpringModel(start: 1, end: 0.05, swing: 1)
-//        let animation = animationsFactory.keyFrameScaleSpringAnimation(animationModel)
-        if let textViewObject = textView {
-//            CATransaction.begin()
-//            CATransaction.setCompletionBlock({
-//                self.textView?.contentScaleFactor = 1
-//            })
-//            textViewObject.layer.add(animation, forKey: "scaleText")
-//            textViewObject.contentScaleFactor = animationModel.start
-//            CATransaction.commit()
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {self.updatePriceFromModel(); cellAnimation()})
-//
-//
-            //textViewObject.minimumScaleFactor = 1
-        
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {self.updatePriceFromModel(); cellAnimation();})
-            let animation = animationsFactory.customeKeyFrameScaleSpring(CustomeKeyFrameSpringScaleModel(duration: 2, start: nil, timingFunction: kCAMediaTimingFunctionDefault, jumps: 2, end: 0.05, jumpingVarians: .big))
-            textViewObject.layer.add(animation, forKey: "flexingText")
-            textViewObject.layer.rasterizationScale = 1
-
-//            UIView.animate(withDuration: 0.5, delay: 0, options: [], animations: {
-//                textViewObject.transform = CGAffineTransform(scaleX: 0.05, y: 0.05)
-//            }, completion: { (_) in
-//                self.updatePriceFromModel(); cellAnimation()
-//                UIView.animate(withDuration: 1.1, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 17, options: .curveEaseOut, animations: {
-//                       textViewObject.transform = CGAffineTransform(scaleX: 1, y: 1)
-//                })
-//            })
-//
-            
-        }
-    }
-}
-
-extension ViewController {
-    
-    @objc func drinkTapped(_ sender: UICollectionViewCell) {
-        //fxView.frame = view.bounds
-        //modalView.showModal(at: sender.frame)
-    }
-    
-
 }
 
 extension ViewController {
@@ -309,7 +169,6 @@ extension ViewController {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("SELECTED ITEM")
-        let cell = collectionView.cellForItem(at: indexPath)
         modalView.showModal(at:  CGPoint(x: view.frame.midX, y: collectionView.frame.maxY))
     }
     
@@ -352,10 +211,6 @@ extension ViewController: DrinkViewDelegate {
     func drinkSwipe(_: Any?) {
         switchDrink()
     }
-    
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        print("Finished scaling")
-    }
 }
 
 extension ViewController: DeleteDelegate {
@@ -364,21 +219,18 @@ extension ViewController: DeleteDelegate {
         let removed = drinksModel.drinksListItem.remove(at: section)
         print(removed)
         let indicies: IndexSet = [section]
-        //list.deleteSections(indicies)
-        //list.reloadSections(indicies)
         drinksModel.drop(drink: removed)
         animatePrice(){}
         list.performBatchUpdates({
             list.deleteItems(at: [indexPath])
             list.deleteSections(indicies)
-            //list.deleteItems(at: [indexPath])
         }) { (_) in
             list.reloadData()
         }
-        //drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
-        //drinkList.reloadSections(<#T##sections: IndexSet##IndexSet#>)
     }
 }
+
+
 
 
 

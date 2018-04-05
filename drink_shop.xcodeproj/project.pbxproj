@@ -15,7 +15,7 @@
 		FB3DC4D420670913004548AF /* DrinksModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4D320670913004548AF /* DrinksModel.swift */; };
 		FB3DC4DA206BF281004548AF /* DrinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4D9206BF281004548AF /* DrinkCell.swift */; };
 		FB3DC4DE2071913D004548AF /* DSModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4DD2071913D004548AF /* DSModal.swift */; };
-		FB3DC4E020728230004548AF /* CostText.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3DC4DF2072822F004548AF /* CostText.swift */; };
+		FBC8E53720767FD400E857E8 /* ViewControllerAnimationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC8E53620767FD400E857E8 /* ViewControllerAnimationExtension.swift */; };
 		FBFE15FD207294E000753585 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE15FC207294E000753585 /* Colors.swift */; };
 		FBFE15FF2073A2BC00753585 /* DrinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE15FE2073A2BC00753585 /* DrinkView.swift */; };
 		FBFE16012073A92A00753585 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE16002073A92A00753585 /* Constants.swift */; };
@@ -33,7 +33,7 @@
 		FB3DC4D320670913004548AF /* DrinksModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinksModel.swift; sourceTree = "<group>"; };
 		FB3DC4D9206BF281004548AF /* DrinkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkCell.swift; sourceTree = "<group>"; };
 		FB3DC4DD2071913D004548AF /* DSModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSModal.swift; sourceTree = "<group>"; };
-		FB3DC4DF2072822F004548AF /* CostText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostText.swift; sourceTree = "<group>"; };
+		FBC8E53620767FD400E857E8 /* ViewControllerAnimationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerAnimationExtension.swift; sourceTree = "<group>"; };
 		FBFE15FC207294E000753585 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		FBFE15FE2073A2BC00753585 /* DrinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkView.swift; sourceTree = "<group>"; };
 		FBFE16002073A92A00753585 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -80,10 +80,10 @@
 				FB3DC4CB20667A72004548AF /* Info.plist */,
 				FB3DC4D9206BF281004548AF /* DrinkCell.swift */,
 				FB3DC4DD2071913D004548AF /* DSModal.swift */,
-				FB3DC4DF2072822F004548AF /* CostText.swift */,
 				FBFE15FC207294E000753585 /* Colors.swift */,
 				FBFE15FE2073A2BC00753585 /* DrinkView.swift */,
 				FBFE16002073A92A00753585 /* Constants.swift */,
+				FBC8E53620767FD400E857E8 /* ViewControllerAnimationExtension.swift */,
 			);
 			path = drink_shop;
 			sourceTree = "<group>";
@@ -160,7 +160,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FB3DC4E020728230004548AF /* CostText.swift in Sources */,
 				FBFE15FD207294E000753585 /* Colors.swift in Sources */,
 				FB3DC4DE2071913D004548AF /* DSModal.swift in Sources */,
 				FB3DC4D420670913004548AF /* DrinksModel.swift in Sources */,
@@ -170,6 +169,7 @@
 				FB3DC4C220667A72004548AF /* ViewController.swift in Sources */,
 				FB3DC4C020667A72004548AF /* AppDelegate.swift in Sources */,
 				FBFE16012073A92A00753585 /* Constants.swift in Sources */,
+				FBC8E53720767FD400E857E8 /* ViewControllerAnimationExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
