@@ -9,20 +9,23 @@
 import UIKit
 
 class DrinkCell: UICollectionViewCell {
+    
     var image: UIImageView = {
        let imageView = UIImageView()
        return imageView
     }()
+    
     var section: Int?
     var cellPadding: CGFloat?
+    var deleteDelegate: DeleteDelegate?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(image)
-        buildConstraints()
+        //buildConstraints()
         image.translatesAutoresizingMaskIntoConstraints = false
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(panDrink(_:)))
         addGestureRecognizer(gesture)
-        
     }
     
     func buildConstraints() {
@@ -33,6 +36,8 @@ class DrinkCell: UICollectionViewCell {
             let left = image.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding)
             let right = image.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding)
             NSLayoutConstraint.activate([top, bottom, left, right])
+            image.transform = CGAffineTransform(rotationAngle: 0)
+            setNeedsLayout()
         }
     }
     
@@ -41,21 +46,32 @@ class DrinkCell: UICollectionViewCell {
     }
     
     @objc func panDrink(_ target: AnyObject?){
-        let sender = target as! UIPanGestureRecognizer
-        let drink = sender.view! as! DrinkCell
-        //drink.superview?.gestureRecognizers
-        let drinkList = drink.superview!
-        let point = sender.translation(in: drinkList)
-        //let drinkLayout = drinkList.layoutAttributesForItem(at: IndexPath(row: 0, section: drink.section!))!
+        let gesture = target as! UIPanGestureRecognizer
+        let drink = gesture.view! as! DrinkCell
+        let drinkList = drink.superview! as! UICollectionView
+        let point = gesture.translation(in: drinkList)
         drink.image.center = CGPoint(x: drink.image.center.x, y:  drink.bounds.midY + point.y)
         let normPi = (CGFloat.pi/Constants.cellSize.height)
         let factor = point.y
         drink.image.transform = CGAffineTransform(rotationAngle: normPi * factor)
-        if sender.state == .ended {
-            UIView.animate(withDuration: 0.2, animations: {
-                drink.image.center = CGPoint(x:  drink.bounds.midX  , y: drink.bounds.midY)
-                drink.image.transform = CGAffineTransform(rotationAngle: 0)
-            })
+        if gesture.state == .ended {
+            print(drink.image.bounds.midY, self.section)
+            if  drink.image.center.y < drink.image.bounds.minY || drink.image.center.y > drink.image.bounds.maxY  {
+                if  let delegate = deleteDelegate {
+                    let endFlight: CGFloat =  drink.image.center.y < drink.image.bounds.minY ? -Constants.cellSize.height: 2*Constants.cellSize.height
+                    UIView.animate(withDuration: 0.1, animations: {
+                        drink.image.center = CGPoint(x:  drink.bounds.midX  , y: endFlight)
+                        drink.image.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+                    }){ (_) in
+                        delegate.deleteItem(at: IndexPath(row: 0, section: self.section!), list: drinkList)
+                    }
+                }
+            } else {
+                UIView.animate(withDuration: 0.2, animations: {
+                    drink.image.center = CGPoint(x:  drink.bounds.midX  , y: drink.bounds.midY)
+                    drink.image.transform = CGAffineTransform(rotationAngle: 0)
+                })
+            }
         }
         print("SOMETHING MOVED")
     }

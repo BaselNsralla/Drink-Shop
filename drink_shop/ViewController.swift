@@ -13,6 +13,9 @@ protocol DrinkViewDelegate {
     func orderDrink()
 }
 
+protocol DeleteDelegate {
+    func deleteItem(at indexPath: IndexPath, list: UICollectionView)
+}
 
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, CAAnimationDelegate {
     
@@ -238,7 +241,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 textViewObject.transform = CGAffineTransform(scaleX: 0.05, y: 0.05)
             }, completion: { (_) in
                 self.updatePriceFromModel(); cellAnimation()
-                UIView.animate(withDuration: 1.1, delay: 0, usingSpringWithDamping: 0.35, initialSpringVelocity: 7, options: .curveEaseOut, animations: {
+                UIView.animate(withDuration: 1.1, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 17, options: .curveEaseOut, animations: {
                        textViewObject.transform = CGAffineTransform(scaleX: 1, y: 1)
                 })
             })
@@ -263,13 +266,11 @@ extension ViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
         let id = indexPath.section
         cell.section = id
-        print("section is ", indexPath.section, "  Item is ", indexPath.item)
-        print(id)
-        print("Row", indexPath.row)
-        print(drinksModel.drinksListItem[id] )
+        cell.deleteDelegate = self
         let image = UIImage(named: drinksModel.drinksListItem[id]+"_"+"list")
         cell.image.image = image
         cell.backgroundColor = UIColor(white: 1, alpha: 0)
+        cell.buildConstraints()
         return cell
     }
     
@@ -348,6 +349,27 @@ extension ViewController: DrinkViewDelegate {
     }
 }
 
+extension ViewController: DeleteDelegate {
+    func deleteItem(at indexPath: IndexPath, list: UICollectionView){
+        let section = indexPath.section
+        let removed = drinksModel.drinksListItem.remove(at: section)
+        print(removed)
+        let indicies: IndexSet = [section]
+        //list.deleteSections(indicies)
+        //list.reloadSections(indicies)
+        drinksModel.drop(drink: removed)
+        animatePrice(){}
+        list.performBatchUpdates({
+            list.deleteItems(at: [indexPath])
+            list.deleteSections(indicies)
+            //list.deleteItems(at: [indexPath])
+        }) { (_) in
+            list.reloadData()
+        }
+        //drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
+        //drinkList.reloadSections(<#T##sections: IndexSet##IndexSet#>)
+    }
+}
 
 
 

@@ -44,4 +44,21 @@ struct DrinksModel {
         print(cost)
     }
     
+    mutating func drop(drink: String) {
+        let removedPrice : Int
+        switch drink {
+            case "frappe_straw":
+                removedPrice = prices[.frappe]!
+            case "latte_straw":
+                removedPrice = prices[.latte]!
+        default:
+            removedPrice = 0
+        }
+        let sequence = cost.split(separator: Character(currency))
+        let oldCost = sequence[sequence.startIndex]
+        let newCost = Int(oldCost)! - removedPrice
+        cost = String(newCost) + currency
+        print(cost)
+    }
+    
 }
