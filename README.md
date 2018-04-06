@@ -4,6 +4,6 @@ Single page drink shop.
 
 ____
 
-![alt text](https://github.com/BaselNsralla/Drink-Shop/blob/master/Example/photo.jpg)   
+![](https://github.com/BaselNsralla/Drink-Shop/blob/master/Example/photo.jpg =640x1136)   
 
-![alt text](https://github.com/BaselNsralla/Drink-Shop/blob/master/Example/ezgif.com-video-to-gif.gif)
+![](https://github.com/BaselNsralla/Drink-Shop/blob/master/Example/ezgif.com-video-to-gif.gif =640x1136)
