@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 struct Constants {
-    static let buttonWidth = 65
-    static let buttonHeight = 65
+    static let buttonWidth: CGFloat = 65
+    static let buttonHeight: CGFloat = 65
     static let cellSize = CGSize(width: 130 , height: 200)
     static let centerOffset: CGFloat = 23
 }

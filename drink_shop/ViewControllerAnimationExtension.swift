@@ -80,8 +80,8 @@ extension ViewController {
         let fullRotation: Double = -0.25/1.4
         let positionAnimationModel = PositionAnimation(from: CGPoint(x: first_x, y: first_y) , to: CGPoint(x: frontView.layer.position.x - 50, y: frontView.layer.position.y - 60), duration: aDuration)
         let scaleAnimationModel = ScaleAnimation(from: 1, to: 0.8, duration: aDuration, fillMode: kCAFillModeForwards)
+        
         CATransaction.begin()
-        CATransaction.setCompletionBlock {}
         let animationGroup = CAAnimationGroup()
         animationGroup.animations = [animationsFactory.coreAnimationPosition(animationModel: positionAnimationModel), animationsFactory.coreAnimationRotation(piRatio: fullRotation, animationDuration: aDuration),
                                      animationsFactory.coreAnimationScale(animationModel: scaleAnimationModel)]
@@ -99,7 +99,7 @@ extension ViewController {
     func animatePrice(cellAnimation: @escaping () -> Void) {
         if let textViewObject = textView {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {self.updatePriceFromModel(); cellAnimation();})
-            let animation = animationsFactory.customeKeyFrameScaleSpring(CustomeKeyFrameSpringScaleModel(duration: 2, start: nil, timingFunction: kCAMediaTimingFunctionDefault, jumps: 2, end: 0.05, jumpingVarians: .big))
+            let animation = animationsFactory.customeKeyFrameScaleSpring(CustomeKeyFrameSpringScaleModel(duration: 2.5, start: nil, timingFunction: kCAMediaTimingFunctionDefault, jumps: 2, end: 0.05, jumpingVarians: .bigThenSmall))
             textViewObject.layer.add(animation, forKey: "flexingText")
             textViewObject.layer.rasterizationScale = 1
         }

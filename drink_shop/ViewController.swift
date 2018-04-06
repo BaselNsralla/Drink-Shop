@@ -34,6 +34,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     let collectionViewContainer = UIView()
     var textView: UILabel?
+    
     let localAttributes: [NSAttributedStringKey : Any]? = [
         .foregroundColor: Colors.pink,
         .strokeWidth: -3.5,
@@ -55,7 +56,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         view.addSubview(collectionViewContainer)
         view.addSubview(fxView)
         setupViews()
-        setupList(){}
+        setupList()
         setupText()
     }
     
@@ -70,11 +71,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         drinkView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         drinkView.backgroundColor = Colors.purple
-        drinkView.layer.shadowColor = UIColor.black.cgColor
-        drinkView.layer.shadowOpacity = 1
-        drinkView.layer.shadowOffset = CGSize.zero
-        drinkView.layer.shadowRadius = 10
-        drinkView.layer.shadowPath = UIBezierPath(rect: drinkView.bounds).cgPath
+        
         let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(drinkSwipe(_:)))
         swipeGesture.direction = .left
         swipeGesture.cancelsTouchesInView = false
@@ -88,7 +85,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         collectionViewContainer.backgroundColor = Colors.purple
     }
     
-    func setupList (clojure : () -> Void) {
+    func setupList () {
         collectionViewContainer.addSubview(drinkList)
         drinkList.register(DrinkCell.self, forCellWithReuseIdentifier: "cell")
         drinkList.showsHorizontalScrollIndicator = false
@@ -103,7 +100,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         drinkList.isUserInteractionEnabled = true
         drinkList.delaysContentTouches = false
         view.setNeedsLayout()
-        clojure()
     }
     
     func setupText() {
@@ -131,14 +127,15 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 }
 
 extension ViewController {
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DrinkCell
         let id = indexPath.section
         cell.section = id
         cell.deleteDelegate = self
+        cell.backgroundColor = UIColor(white: 1, alpha: 0)
         let image = UIImage(named: drinksModel.drinksListItem[id]+"_"+"list")
         cell.image.image = image
-        cell.backgroundColor = UIColor(white: 1, alpha: 0)
         cell.buildConstraints()
         return cell
     }
@@ -157,9 +154,6 @@ extension ViewController {
         if (indexPath.section == drinksModel.drinksListItem.count-1 && !drinksModel.animatedLast) {
             drinksModel.animatedLast = true
             let drinkCell = cell as! DrinkCell
-            if collectionView.numberOfSections > 2 {
-                let previousCell = collectionView.cellForItem(at: IndexPath(row: 0, section:indexPath.section - 1 ))
-            }
             let from =  CGPoint(x: collectionView.bounds.maxX - Constants.cellSize.width/4 , y: -10)
             let to = CGPoint(x: cell.layer.position.x, y: drinkCell.layer.position.y )
             let springAnimation = self.animationsFactory.coreAnimationSpring(PositionAnimation(from: from, to: to, duration: 1.2))
@@ -168,7 +162,6 @@ extension ViewController {
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("SELECTED ITEM")
         modalView.showModal(at:  CGPoint(x: view.frame.midX, y: collectionView.frame.maxY))
     }
     
@@ -217,7 +210,6 @@ extension ViewController: DeleteDelegate {
     func deleteItem(at indexPath: IndexPath, list: UICollectionView){
         let section = indexPath.section
         let removed = drinksModel.drinksListItem.remove(at: section)
-        print(removed)
         let indicies: IndexSet = [section]
         drinksModel.drop(drink: removed)
         animatePrice(){}

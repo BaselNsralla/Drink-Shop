@@ -5,12 +5,11 @@ class DrinkView: UIView {
     
     let frappeImage : UIImageView = {
         let image = UIImageView(image: #imageLiteral(resourceName: "frappe_straw"))
-        //image.frame = CGRect(x: 0, y: 0, width: 150, height: 250)
         return image
     }()
+    
     let latteImage : UIImageView = {
         let image = UIImageView(image: #imageLiteral(resourceName: "latte_straw"))
-        //image.frame = CGRect(x: 0, y: 0, width: 150, height: 250)
         return image
     }()
     
@@ -31,7 +30,7 @@ class DrinkView: UIView {
         btn.layer.shadowOffset = CGSize.zero
         btn.layer.shadowRadius = 10
         btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
-        btn.layer.cornerRadius = 65/2
+        btn.layer.cornerRadius = Constants.buttonWidth/2
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
     }()
@@ -45,7 +44,7 @@ class DrinkView: UIView {
         btn.layer.shadowRadius = 10
         btn.layer.shadowPath = UIBezierPath(rect: btn.bounds).cgPath
         btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.layer.cornerRadius = 65/2
+        btn.layer.cornerRadius = Constants.buttonWidth/2
         return btn
     }()
     
@@ -112,13 +111,13 @@ class DrinkView: UIView {
     func buildButtonsConstraints() {
         orderButton.leftAnchor.constraint(equalTo: leftAnchor, constant: 5).isActive = true
         orderButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
-        orderButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
-        orderButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
+        orderButton.widthAnchor.constraint(equalToConstant: Constants.buttonWidth).isActive = true
+        orderButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight).isActive = true
         
         switchButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
         switchButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -5).isActive = true
-        switchButton.widthAnchor.constraint(equalToConstant: 65).isActive = true
-        switchButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
+        switchButton.widthAnchor.constraint(equalToConstant: Constants.buttonWidth).isActive = true
+        switchButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {
