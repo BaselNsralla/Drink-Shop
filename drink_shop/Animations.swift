@@ -106,7 +106,6 @@ struct AnimationsFactory {
             for i in 0..<values.count {
                 bites.append(NSNumber(value: bite*Double(i)))
             }
-            print(bites)
             keyFrameAnimation.keyTimes = bites
             keyFrameAnimation.duration = duration
             keyFrameAnimation.timingFunction = CAMediaTimingFunction(name: timingFunction)

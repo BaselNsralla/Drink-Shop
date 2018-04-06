@@ -182,7 +182,6 @@ extension ViewController {
 extension ViewController: DrinkViewDelegate {
     
     func switchDrink() {
-        print(drinksModel.backgroundDrinkIndex, drinksModel.currentDrinkIndex)
         setupKeyFrameAnimations()
         setupAnimations()
         drinksModel.switchDrinks()
@@ -190,10 +189,10 @@ extension ViewController: DrinkViewDelegate {
     
     func orderDrink() {
         drinksModel.animatedLast = false
-        drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
         drinksModel.buy(drink: drinksModel.currentDrink)
+        drinksModel.drinksListItem.append(drinksModel.currentDrink.rawValue)
+        self.drinkList.reloadData()
         animatePrice(){
-            self.drinkList.reloadData()
             let ip = IndexPath(row: 0, section: self.drinksModel.drinksListItem.count-1)
             self.drinkList.scrollToItem(at: ip, at: UICollectionViewScrollPosition.right, animated: true)
         }
@@ -212,13 +211,13 @@ extension ViewController: DeleteDelegate {
         let removed = drinksModel.drinksListItem.remove(at: section)
         let indicies: IndexSet = [section]
         drinksModel.drop(drink: removed)
-        animatePrice(){}
         list.performBatchUpdates({
             list.deleteItems(at: [indexPath])
             list.deleteSections(indicies)
         }) { (_) in
             list.reloadData()
         }
+        animatePrice(){}
     }
 }
 

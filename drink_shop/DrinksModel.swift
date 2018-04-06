@@ -41,7 +41,6 @@ struct DrinksModel {
         let oldCost = sequence[sequence.startIndex]
         let newCost = Int(oldCost)! + prices[drink]!
         cost = String(newCost) + currency
-        print(cost)
     }
     
     mutating func drop(drink: String) {
@@ -58,7 +57,6 @@ struct DrinksModel {
         let oldCost = sequence[sequence.startIndex]
         let newCost = Int(oldCost)! - removedPrice
         cost = String(newCost) + currency
-        print(cost)
     }
     
 }

@@ -56,13 +56,12 @@ class DrinkCell: UICollectionViewCell {
         if gesture.state == .ended {
             if  drink.image.center.y < drink.image.bounds.minY || drink.image.center.y > drink.image.bounds.maxY  {
                 if  let delegate = deleteDelegate {
+                    delegate.deleteItem(at: IndexPath(row: 0, section: self.section!), list: drinkList)
                     let endFlight: CGFloat =  drink.image.center.y < drink.image.bounds.minY ? -Constants.cellSize.height: 2*Constants.cellSize.height
                     UIView.animate(withDuration: 0.1, animations: {
                         drink.image.center = CGPoint(x:  drink.bounds.midX  , y: endFlight)
                         drink.image.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
-                    }){ (_) in
-                        delegate.deleteItem(at: IndexPath(row: 0, section: self.section!), list: drinkList)
-                    }
+                    })
                 }
             } else {
                 UIView.animate(withDuration: 0.2, animations: {

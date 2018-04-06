@@ -106,6 +106,5 @@ extension ViewController {
     }
     
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        print("Finished scaling")
     }
 }
