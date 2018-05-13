@@ -1,6 +1,6 @@
 # Drink Shop
 
-Single page drink shop.
+Single page drink shop, no storyboard.
 
 ____
 
